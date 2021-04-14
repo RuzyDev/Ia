@@ -1,13 +1,21 @@
 package br.com.arcom.signpad.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.media.ExifInterface;
 import android.media.MediaScannerConnection;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Chunk;
@@ -29,18 +37,17 @@ import java.io.IOException;
 import br.com.arcom.signpad.R;
 import br.com.arcom.signpad.util.IntentParameterUtils;
 import br.com.arcom.signpad.util.UtilDate;
+import br.com.arcom.signpad.util.UtilPhoto;
 
 public class AssinaturaUsuarioActivity extends AppCompatActivity {
 
+    private static String pathUsuarioFoto;
     private SignatureView mAssinaturaUsuario;
     private String mUsuarioNomeCom;
     private String mUsuarioCpf;
-    private String pathUsuarioFoto;
     private String pathUsuarioAss;
     private String titlePdf;
-
     private String usuarioFotoName;
-    private Bitmap bitmapUsuarioFoto;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +62,7 @@ public class AssinaturaUsuarioActivity extends AppCompatActivity {
         mUsuarioNomeCom = getIntent().getExtras().getString(IntentParameterUtils.USUARIO_NOME_COMPLETO);
         mUsuarioCpf = getIntent().getExtras().getString(IntentParameterUtils.USUARIO_CPF);
         usuarioFotoName = getIntent().getExtras().getString(IntentParameterUtils.USUARIO_FOTO_NAME);
-        bitmapUsuarioFoto = (Bitmap) getIntent().getExtras().getParcelable(IntentParameterUtils.USUARIO_FOTO_BITMAP);
+        pathUsuarioFoto = getIntent().getExtras().getString(IntentParameterUtils.USUARIO_FOTO_PATH);
     }
 
     public void toActivtyAnterior(View view) {
@@ -67,9 +74,17 @@ public class AssinaturaUsuarioActivity extends AppCompatActivity {
     }
 
     public void salvarDados(View view) {
+        if (!validarAssinatura()) return;
+
         String imagemName = mUsuarioNomeCom.trim() + "-" + mUsuarioCpf.trim() + "-ASSINATURAUSUARIO";
         Bitmap bitmap = mAssinaturaUsuario.getSignatureBitmap();
         pathUsuarioAss = saveImage(bitmap, imagemName);
+        Bitmap bitmapUsuarioFoto = BitmapFactory.decodeFile(pathUsuarioFoto);
+
+        File photoFile = UtilPhoto.createPhotoFile(usuarioFotoName, AssinaturaUsuarioActivity.this);
+        Uri photoUri = FileProvider.getUriForFile(AssinaturaUsuarioActivity.this, "br.com.arcom.signpad.fileprovider", photoFile);
+        bitmapUsuarioFoto = UtilPhoto.rotateBitmap(AssinaturaUsuarioActivity.this, photoUri, bitmapUsuarioFoto, pathUsuarioFoto);
+
         pathUsuarioFoto = saveImage(bitmapUsuarioFoto, usuarioFotoName);
         titlePdf = mUsuarioNomeCom.trim() + "-" + mUsuarioCpf.trim();
         String pdfPath = criarPdf(pathUsuarioFoto, pathUsuarioAss, titlePdf);
@@ -121,10 +136,48 @@ public class AssinaturaUsuarioActivity extends AppCompatActivity {
             document.add(p);
 
             // Inserir texto informativo 1
-            p = new Paragraph("Este termo tem por finalidade registrar a manifestação livre, informada e inequívoca pela qual o " +
-                    "titular concorda com o termo de seus dados pessoais para finalidades especificas em conformidade com a Lei Nº 13.709 - " +
-                    "Lei Geral de proteção de dados Pessoais (LGPD). Ao aceitar o presente termo, manifesta-se o consentimento de que " +
-                    "a empresa Arcom S/A, inscrita no CNPJ sob o N° 25.769.266/0001-24, determina os seguintes dados pessoais do visitante:",
+            p = new Paragraph("Considerando o interesse expresso do signatário em adentrar nas dependências da empresa Arcom S/A, este termo" +
+                    " tem por finalidade registrar a manifestação livre, informada e inequívoca pela qual o titular concorda com a utilização de" +
+                    " seus dados pessoais abaixo identificados para finalidades específicas, nos moldes da Lei 13.709 de 14 de agosto de 2018 -" +
+                    " Lei Geral de Proteção de Dados Pessoais (LGPD).",
+                    FontFactory.getFont(FontFactory.defaultEncoding, 12, Font.NORMAL, BaseColor.BLACK));
+            p.setLeading(1, 1);
+            p.setAlignment(Element.ALIGN_JUSTIFIED);
+            document.add(p);
+
+            // Inserir espaço
+            p = new Paragraph(" ");
+            document.add(p);
+
+            // Inserir texto informativo 1
+            p = new Paragraph("Com a assinatura, o titular autoriza a empresa Arcom S/A, inscrita no CNPJ sob o n° 25.769.266/0001-24 a" +
+                    " registrar o acesso do signatário na portaria da empresa, em cumprimento às medidas de segurança interna" +
+                    " adotadas pela sociedade empresária.",
+                    FontFactory.getFont(FontFactory.defaultEncoding, 12, Font.NORMAL, BaseColor.BLACK));
+            p.setLeading(1, 1);
+            p.setAlignment(Element.ALIGN_JUSTIFIED);
+            document.add(p);
+
+            // Inserir espaço
+            p = new Paragraph(" ");
+            document.add(p);
+
+            // Inserir texto informativo 1
+            p = new Paragraph("Estes dados não serão compartilhados com outras empresas, salvo por expressa determinação legal, permanecendo" +
+                    " arquivados no banco de dados da Arcom S/A, seguindo todos os protocolos de segurança da informação necessários para " +
+                    "a garantia de não violação destes elementos.",
+                    FontFactory.getFont(FontFactory.defaultEncoding, 12, Font.NORMAL, BaseColor.BLACK));
+            p.setLeading(1, 1);
+            p.setAlignment(Element.ALIGN_JUSTIFIED);
+            document.add(p);
+
+            // Inserir espaço
+            p = new Paragraph(" ");
+            document.add(p);
+
+            // Inserir texto informativo 1
+            p = new Paragraph("Com isso, a identificação abaixo, por meio de foto e assinatura pessoal, expressa a irrestrita" +
+                    " concordância com o acima exposto.",
                     FontFactory.getFont(FontFactory.defaultEncoding, 12, Font.NORMAL, BaseColor.BLACK));
             p.setLeading(1, 1);
             p.setAlignment(Element.ALIGN_JUSTIFIED);
@@ -137,34 +190,21 @@ public class AssinaturaUsuarioActivity extends AppCompatActivity {
             // Inserir dados fornecidos pelo usuario
             p.setLeading(1, 1);
             p.setAlignment(Element.ALIGN_LEFT);
-            p = new Paragraph("    Nome: " + mUsuarioNomeCom,
+            p = new Paragraph("Nome: " + mUsuarioNomeCom,
                     FontFactory.getFont(FontFactory.defaultEncoding, 12, Font.BOLD, BaseColor.BLACK));
             document.add(p);
-            p = new Paragraph("    CPF: " + mUsuarioCpf,
+            p = new Paragraph("CPF: " + mUsuarioCpf,
                     FontFactory.getFont(FontFactory.defaultEncoding, 12, Font.BOLD, BaseColor.BLACK));
             document.add(p);
-            p = new Paragraph("    Foto: ",
+            p = new Paragraph("Foto: ",
                     FontFactory.getFont(FontFactory.defaultEncoding, 12, Font.BOLD, BaseColor.BLACK));
             document.add(p);
 
             Image figura = Image.getInstance(pathUsuarioFoto);
-            figura.scalePercent(70, 70);
+            figura.scalePercent(5, 5);
             Chunk chunk = new Chunk(figura, 0, 0, true);
             p = new Paragraph(chunk);
             p.setAlignment(Element.ALIGN_CENTER);
-            document.add(p);
-
-            p = new Paragraph(" ");
-            document.add(p);
-
-            p = new Paragraph("Estes dados tem por finalidade única o registro de acesso do indivíduo na portaria da empresa, colaborando " +
-                    "nas medidas de segurança interna adotadas por esta sociedade de empresa os dados não serão compartilhados com outras empresas, " +
-                    "permanecendo arquivos no banco de dados da Arcom S/A seguindo os protocolos de segurança necessários para a garantia de não " +
-                    "violação das informações existentes.  Assim, pela ciência dos Termos deste documento, a assinatura representa a concordância " +
-                    "com informações prestadas.",
-                    FontFactory.getFont(FontFactory.defaultEncoding, 12, Font.NORMAL, BaseColor.BLACK));
-            p.setLeading(1, 1);
-            p.setAlignment(Element.ALIGN_JUSTIFIED);
             document.add(p);
 
             p = new Paragraph(" ");
@@ -209,6 +249,14 @@ public class AssinaturaUsuarioActivity extends AppCompatActivity {
             de.printStackTrace();
         }
         return "";
+    }
+
+    public boolean validarAssinatura() {
+        if (mAssinaturaUsuario.isBitmapEmpty()) {
+            Toast.makeText(this, "A assinatura não pode estar vazia", Toast.LENGTH_LONG).show();
+            return false;
+        }
+        return true;
     }
 
     public void toNextActivity() {

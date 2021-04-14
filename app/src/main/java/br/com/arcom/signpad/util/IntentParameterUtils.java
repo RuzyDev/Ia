@@ -13,12 +13,12 @@ public class IntentParameterUtils {
     public static final String USUARIO_CPF = "usuarioCpf";
 
     /**
-     * Identifica o USUARIO CPF
+     * Identifica o USUARIO FOTO PATH
      */
-    public static final String USUARIO_FOTO_BITMAP = "usuarioFotoBitmap";
+    public static final String USUARIO_FOTO_PATH = "usuarioFotoPath";
 
     /**
-     * Identifica o USUARIO CPF
+     * Identifica o USUARIO FOTO NAME
      */
     public static final String USUARIO_FOTO_NAME = "usuarioFotoName";
 

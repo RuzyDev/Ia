@@ -10,88 +10,79 @@
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        android:gravity="center">
 
         <ImageView
             android:id="@+id/usuario_imagem"
             android:layout_width="wrap_content"
             android:layout_height="200dp"
-            android:layout_margin="40dp"
-            android:layout_weight="1"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="40dp"
             android:onClick="tirarFoto"
             android:tag="tirarFoto"
             app:srcCompat="@drawable/ic_usuario_foto2" />
+
+        <TextView
+            android:id="@+id/text_foto_msg_erro"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="A foto não pode estar vazia!"
+            android:textColor="#FA6C3F"
+            android:textAlignment="center"
+            android:layout_marginBottom="30dp"
+            android:visibility="invisible"/>
+
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/textView"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/text_input_nameUser"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="15dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginRight="15dp"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:text="Nome completo:"
-        android:textColor="#555555"
-        android:textSize="14sp"
-        android:textStyle="bold"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        app:errorEnabled="true"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.466"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout">
 
-    <EditText
-        android:id="@+id/editText_usuario_nomeCom"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:text=""
-        android:textColor="#424242"
-        android:textSize="14sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
+        <EditText
+            android:id="@+id/editText_usuario_nome"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:textColor="#424242"
+            android:hint="Nome completo" />
 
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:text="CPF:"
-        android:textColor="#555555"
-        android:textSize="14sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editText_usuario_nomeCom" />
+    </com.google.android.material.textfield.TextInputLayout>
 
-    <EditText
-        android:id="@+id/editText_usuario_cpf"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/text_input_cpfUser"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
-        android:ems="10"
-        android:inputType="number"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:textColor="#424242"
-        android:textSize="14sp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        app:counterMaxLength="14"
+        app:errorEnabled="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView2" />
+        app:layout_constraintTop_toBottomOf="@+id/text_input_nameUser">
+
+        <EditText
+            android:id="@+id/editText_usuario_cpf"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:textColor="#424242"
+            android:hint="CPF"
+            android:maxLength="14"/>
+
+    </com.google.android.material.textfield.TextInputLayout>
 
     <Button
         android:id="@+id/button4"
