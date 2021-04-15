@@ -109,7 +109,7 @@ public class DadosUsuarioActivity extends AppCompatActivity {
     public void toNextActivity(View view) {
         if (!validarNome() | !validarCpf() | !validarFoto()) return;
         String nomeUsuario = textInputNome.getEditText().getText().toString().trim();
-        String cpfUsuario = textInputCpf.getEditText().getText().toString().trim();
+        String cpfUsuario = formatarCpf(textInputCpf.getEditText().getText().toString().trim());
         String imagemName = nomeUsuario+"-"+cpfUsuario+"-FOTOUSUARIO";
 
         Intent intent = new Intent(DadosUsuarioActivity.this, AssinaturaUsuarioActivity.class);
@@ -164,4 +164,9 @@ public class DadosUsuarioActivity extends AppCompatActivity {
         super.onBackPressed();
         deleteImageTemp();
     }
+
+    public String formatarCpf(String cpf) {
+        return cpf.substring(0,3)+"."+cpf.substring(3,6)+"."+cpf.substring(6,9)+"-"+cpf.substring(9,11);
+    }
+
 }
