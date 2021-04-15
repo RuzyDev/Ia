@@ -55,7 +55,7 @@
             android:id="@+id/editText_usuario_nome"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="text"
+            android:inputType="textCapSentences"
             android:textColor="#424242"
             android:hint="Nome completo" />
 
@@ -80,7 +80,7 @@
             android:inputType="number"
             android:textColor="#424242"
             android:hint="CPF"
-            android:maxLength="14"/>
+            android:maxLength="11"/>
 
     </com.google.android.material.textfield.TextInputLayout>
 

@@ -1,12 +1,8 @@
 package br.com.arcom.signpad.activity;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
-import android.media.ExifInterface;
-import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -29,19 +25,21 @@ import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.kyanogen.signatureview.SignatureView;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
 import br.com.arcom.signpad.R;
 import br.com.arcom.signpad.util.IntentParameterUtils;
+import br.com.arcom.signpad.util.StringParameterUtils;
 import br.com.arcom.signpad.util.UtilDate;
-import br.com.arcom.signpad.util.UtilPhoto;
+import br.com.arcom.signpad.util.UtilImage;
+import br.com.arcom.signpad.util.UtilValidate;
 
 public class AssinaturaUsuarioActivity extends AppCompatActivity {
 
     private static String pathUsuarioFoto;
+    private static String pathUsuarioFotoTemp;
     private SignatureView mAssinaturaUsuario;
     private String mUsuarioNomeCom;
     private String mUsuarioCpf;
@@ -62,54 +60,29 @@ public class AssinaturaUsuarioActivity extends AppCompatActivity {
         mUsuarioNomeCom = getIntent().getExtras().getString(IntentParameterUtils.USUARIO_NOME_COMPLETO);
         mUsuarioCpf = getIntent().getExtras().getString(IntentParameterUtils.USUARIO_CPF);
         usuarioFotoName = getIntent().getExtras().getString(IntentParameterUtils.USUARIO_FOTO_NAME);
-        pathUsuarioFoto = getIntent().getExtras().getString(IntentParameterUtils.USUARIO_FOTO_PATH);
+        pathUsuarioFotoTemp = getIntent().getExtras().getString(IntentParameterUtils.USUARIO_FOTO_PATH_TEMP);
     }
 
     public void toActivtyAnterior(View view) {
         onBackPressed();
     }
 
+    public void toNextActivity() {
+        Intent intent = new Intent(AssinaturaUsuarioActivity.this, ConclusaoActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
+    public boolean validarAssinatura() {
+        if (mAssinaturaUsuario.isBitmapEmpty()) {
+            Toast.makeText(this, "A assinatura não pode estar vazia!", Toast.LENGTH_LONG).show();
+            return false;
+        }
+        return true;
+    }
+
     public void limparAssinatura(View view) {
         mAssinaturaUsuario.clearCanvas();
-    }
-
-    public void salvarDados(View view) {
-        if (!validarAssinatura()) return;
-
-        String imagemName = mUsuarioNomeCom.trim() + "-" + mUsuarioCpf.trim() + "-ASSINATURAUSUARIO";
-        Bitmap bitmap = mAssinaturaUsuario.getSignatureBitmap();
-        pathUsuarioAss = saveImage(bitmap, imagemName);
-        Bitmap bitmapUsuarioFoto = BitmapFactory.decodeFile(pathUsuarioFoto);
-
-        File photoFile = UtilPhoto.createPhotoFile(usuarioFotoName, AssinaturaUsuarioActivity.this);
-        Uri photoUri = FileProvider.getUriForFile(AssinaturaUsuarioActivity.this, "br.com.arcom.signpad.fileprovider", photoFile);
-        bitmapUsuarioFoto = UtilPhoto.rotateBitmap(AssinaturaUsuarioActivity.this, photoUri, bitmapUsuarioFoto, pathUsuarioFoto);
-
-        pathUsuarioFoto = saveImage(bitmapUsuarioFoto, usuarioFotoName);
-        titlePdf = mUsuarioNomeCom.trim() + "-" + mUsuarioCpf.trim();
-        String pdfPath = criarPdf(pathUsuarioFoto, pathUsuarioAss, titlePdf);
-        toNextActivity();
-    }
-
-    public String saveImage(Bitmap myBitmap, String imagemName) {
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        myBitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-        File wallpaperDirectory = new File(String.valueOf(ContextCompat.getExternalFilesDirs(getApplicationContext(), null)[0]));
-        if (!wallpaperDirectory.exists()) wallpaperDirectory.mkdirs();
-
-        try {
-            File f = new File(wallpaperDirectory, imagemName + ".jpg");
-            f.createNewFile();
-            FileOutputStream fo = new FileOutputStream(f);
-            fo.write(bytes.toByteArray());
-            MediaScannerConnection.scanFile(AssinaturaUsuarioActivity.this, new String[]{f.getPath()}, new String[]{"image/jpeg"}, null);
-            fo.close();
-
-            return f.getAbsolutePath();
-        } catch (IOException e1) {
-            e1.printStackTrace();
-        }
-        return "";
     }
 
     public String criarPdf(String pathUsuarioFoto, String pathUsuarioAss, String titlePdf) {
@@ -201,7 +174,7 @@ public class AssinaturaUsuarioActivity extends AppCompatActivity {
             document.add(p);
 
             Image figura = Image.getInstance(pathUsuarioFoto);
-            figura.scalePercent(5, 5);
+            figura.scalePercent(20, 20);
             Chunk chunk = new Chunk(figura, 0, 0, true);
             p = new Paragraph(chunk);
             p.setAlignment(Element.ALIGN_CENTER);
@@ -219,7 +192,7 @@ public class AssinaturaUsuarioActivity extends AppCompatActivity {
             document.add(p);
 
             figura = Image.getInstance(pathUsuarioAss);
-            figura.scalePercent(10, 10);
+            figura.scalePercent(15, 15);
             chunk = new Chunk(figura, 0, 0, true);
             p = new Paragraph(chunk);
             p.setAlignment(Element.ALIGN_CENTER);
@@ -251,18 +224,42 @@ public class AssinaturaUsuarioActivity extends AppCompatActivity {
         return "";
     }
 
-    public boolean validarAssinatura() {
-        if (mAssinaturaUsuario.isBitmapEmpty()) {
-            Toast.makeText(this, "A assinatura não pode estar vazia", Toast.LENGTH_LONG).show();
-            return false;
-        }
-        return true;
+    public void salvarDados(View view) {
+        if (!validarAssinatura()) return;
+
+        // Salva imagem da assinatura
+        String imagemName = mUsuarioNomeCom.trim() + "-" + mUsuarioCpf.trim() + "-ASSINATURAUSUARIO";
+        Bitmap bitmap = mAssinaturaUsuario.getSignatureBitmap();
+        pathUsuarioAss = UtilImage.saveImage(bitmap, imagemName, AssinaturaUsuarioActivity.this);
+
+        // Rotacionar imagem temporaria
+        Bitmap bitmapUsuarioFoto = BitmapFactory.decodeFile(pathUsuarioFotoTemp);
+        File photoFileTemp = UtilImage.getPhotoFile(pathUsuarioFotoTemp);
+        Uri photoUri = FileProvider.getUriForFile(AssinaturaUsuarioActivity.this, "br.com.arcom.signpad.fileprovider", photoFileTemp);
+        bitmapUsuarioFoto = UtilImage.rotateBitmap(AssinaturaUsuarioActivity.this, photoUri, bitmapUsuarioFoto, pathUsuarioFotoTemp);
+
+        // Salvar imagem temporaria
+        bitmapUsuarioFoto = UtilImage.imageBitmapResize(bitmapUsuarioFoto, 480, 640);
+        pathUsuarioFoto = UtilImage.saveImage(bitmapUsuarioFoto, usuarioFotoName, AssinaturaUsuarioActivity.this);
+
+        // Criar Pdf
+        titlePdf = mUsuarioNomeCom.trim() + "-" + mUsuarioCpf.trim();
+        String pdfPath = criarPdf(pathUsuarioFoto, pathUsuarioAss, titlePdf);
+
+        // Deletar imagens salvas
+        deletarDadosUsuario(pathUsuarioFoto, pathUsuarioAss, pathUsuarioFotoTemp);
+
+        // Iniciar nova activity
+        toNextActivity();
     }
 
-    public void toNextActivity() {
-        Intent intent = new Intent(AssinaturaUsuarioActivity.this, ConclusaoActivity.class);
-        startActivity(intent);
-        finish();
+    private void deletarDadosUsuario(String pathUsuarioFoto, String pathUsuarioAss, String pathUsuarioFotoTemp) {
+        File foto = new File(pathUsuarioFoto);
+        if (foto.delete()) Log.d(StringParameterUtils.TAG_LOG_SIGNPAD, "Deleted the file: " + foto.getName());
+        foto = new File(pathUsuarioAss);
+        if (foto.delete()) Log.d(StringParameterUtils.TAG_LOG_SIGNPAD, "Deleted the file: " + foto.getName());
+        foto = new File(pathUsuarioFotoTemp);
+        if (foto.delete()) Log.d(StringParameterUtils.TAG_LOG_SIGNPAD, "Deleted the file: " + foto.getName());
     }
 
 }

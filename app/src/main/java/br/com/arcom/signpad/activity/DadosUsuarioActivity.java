@@ -1,47 +1,36 @@
 package br.com.arcom.signpad.activity;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
-import android.media.ExifInterface;
-import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.core.graphics.drawable.RoundedBitmapDrawable;
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 
 import com.google.android.material.textfield.TextInputLayout;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 
 import br.com.arcom.signpad.R;
 import br.com.arcom.signpad.util.IntegerParameterUtils;
 import br.com.arcom.signpad.util.IntentParameterUtils;
 import br.com.arcom.signpad.util.MaskEditUtil;
-import br.com.arcom.signpad.util.UtilPhoto;
+import br.com.arcom.signpad.util.UtilImage;
+import br.com.arcom.signpad.util.UtilValidate;
 
 public class DadosUsuarioActivity extends AppCompatActivity {
 
-    private static String pathToUserPhoto;
+    private static String pathToUserPhotoTemp;
     private TextInputLayout textInputNome;
     private TextInputLayout textInputCpf;
     private TextView textFotoMsgErro;
@@ -54,7 +43,7 @@ public class DadosUsuarioActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dados_usuario_activity);
         recuperarParametros();
-        adicionarMascara();
+//        adicionarMascara();
     }
 
     public void recuperarParametros() {
@@ -83,8 +72,11 @@ public class DadosUsuarioActivity extends AppCompatActivity {
         if (cpfUsuario.isEmpty()) {
             textInputCpf.setError("O cpf não pode estar vazio!");
             return false;
-        } else if (cpfUsuario.length() < 14) {
+        } else if (cpfUsuario.length() < 11) {
             textInputCpf.setError("Por favor, preencha o CPF corretamente!");
+            return false;
+        } else if (!UtilValidate.isCPF(cpfUsuario)) {
+            textInputCpf.setError("CPF inválido!");
             return false;
         } else {
             textInputCpf.setError(null);
@@ -121,17 +113,16 @@ public class DadosUsuarioActivity extends AppCompatActivity {
         intent.putExtra(IntentParameterUtils.USUARIO_NOME_COMPLETO, nomeUsuario);
         intent.putExtra(IntentParameterUtils.USUARIO_CPF, cpfUsuario);
         intent.putExtra(IntentParameterUtils.USUARIO_FOTO_NAME, imagemName);
-        intent.putExtra(IntentParameterUtils.USUARIO_FOTO_PATH, pathToUserPhoto);
+        intent.putExtra(IntentParameterUtils.USUARIO_FOTO_PATH_TEMP, pathToUserPhotoTemp);
         startActivity(intent);
-        finish();
     }
 
     public void tirarFoto(View view) {
         Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (cameraIntent.resolveActivity(getPackageManager()) != null) {
-            File photoFile = UtilPhoto.createPhotoFile("photoTemp", DadosUsuarioActivity.this);
-            if (photoFile!=null) {
-                pathToUserPhoto = photoFile.getAbsolutePath();
+            File photoFile = UtilImage.createPhotoFile("photoTemp", DadosUsuarioActivity.this, "/Pictures");
+            if (photoFile != null) {
+                pathToUserPhotoTemp = photoFile.getAbsolutePath();
                 photoUri = FileProvider.getUriForFile(DadosUsuarioActivity.this, "br.com.arcom.signpad.fileprovider", photoFile);
                 cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
                 startActivityForResult(cameraIntent, IntegerParameterUtils.CAM_REQUEST);
@@ -144,8 +135,8 @@ public class DadosUsuarioActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == IntegerParameterUtils.CAM_REQUEST && resultCode == Activity.RESULT_OK) {
 
-            bitmapUsuarioFoto = BitmapFactory.decodeFile(pathToUserPhoto);
-            bitmapUsuarioFoto = UtilPhoto.rotateBitmap(DadosUsuarioActivity.this, photoUri, bitmapUsuarioFoto, pathToUserPhoto);
+            bitmapUsuarioFoto = BitmapFactory.decodeFile(pathToUserPhotoTemp);
+            bitmapUsuarioFoto = UtilImage.rotateBitmap(DadosUsuarioActivity.this, photoUri, bitmapUsuarioFoto, pathToUserPhotoTemp);
 
             RoundedBitmapDrawable roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(getResources(), bitmapUsuarioFoto);
             roundedBitmapDrawable.setCornerRadius(10.0f);
