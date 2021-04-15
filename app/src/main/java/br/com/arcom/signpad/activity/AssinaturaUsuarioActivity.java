@@ -5,8 +5,11 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,24 +31,28 @@ import com.kyanogen.signatureview.SignatureView;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import br.com.arcom.signpad.R;
 import br.com.arcom.signpad.util.IntentParameterUtils;
 import br.com.arcom.signpad.util.StringParameterUtils;
 import br.com.arcom.signpad.util.UtilDate;
 import br.com.arcom.signpad.util.UtilImage;
-import br.com.arcom.signpad.util.UtilValidate;
 
 public class AssinaturaUsuarioActivity extends AppCompatActivity {
 
     private static String pathUsuarioFoto;
     private static String pathUsuarioFotoTemp;
-    private SignatureView mAssinaturaUsuario;
     private String mUsuarioNomeCom;
     private String mUsuarioCpf;
     private String pathUsuarioAss;
     private String titlePdf;
     private String usuarioFotoName;
+
+    private SignatureView mAssinaturaUsuario;
+    private LinearLayout mAssConteudo;
+    private LinearLayout mAssLoading;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +63,8 @@ public class AssinaturaUsuarioActivity extends AppCompatActivity {
 
     public void recuperarParametros() {
         mAssinaturaUsuario = findViewById(R.id.assinaturaUsuario_SignatureView);
+        mAssConteudo = findViewById(R.id.view_ass_conteudo);
+        mAssLoading = findViewById(R.id.view_ass_progressBar);
 
         mUsuarioNomeCom = getIntent().getExtras().getString(IntentParameterUtils.USUARIO_NOME_COMPLETO);
         mUsuarioCpf = getIntent().getExtras().getString(IntentParameterUtils.USUARIO_CPF);
@@ -224,9 +233,7 @@ public class AssinaturaUsuarioActivity extends AppCompatActivity {
         return "";
     }
 
-    public void salvarDados(View view) {
-        if (!validarAssinatura()) return;
-
+    public void salvarDados() {
         // Salva imagem da assinatura
         String imagemName = mUsuarioNomeCom.trim() + "-" + mUsuarioCpf.trim() + "-ASSINATURAUSUARIO";
         Bitmap bitmap = mAssinaturaUsuario.getSignatureBitmap();
@@ -248,18 +255,36 @@ public class AssinaturaUsuarioActivity extends AppCompatActivity {
 
         // Deletar imagens salvas
         deletarDadosUsuario(pathUsuarioFoto, pathUsuarioAss, pathUsuarioFotoTemp);
-
-        // Iniciar nova activity
-        toNextActivity();
     }
 
-    private void deletarDadosUsuario(String pathUsuarioFoto, String pathUsuarioAss, String pathUsuarioFotoTemp) {
+    public void deletarDadosUsuario(String pathUsuarioFoto, String pathUsuarioAss, String pathUsuarioFotoTemp) {
         File foto = new File(pathUsuarioFoto);
         if (foto.delete()) Log.d(StringParameterUtils.TAG_LOG_SIGNPAD, "Deleted the file: " + foto.getName());
         foto = new File(pathUsuarioAss);
         if (foto.delete()) Log.d(StringParameterUtils.TAG_LOG_SIGNPAD, "Deleted the file: " + foto.getName());
         foto = new File(pathUsuarioFotoTemp);
         if (foto.delete()) Log.d(StringParameterUtils.TAG_LOG_SIGNPAD, "Deleted the file: " + foto.getName());
+    }
+
+    public void showLoading(Boolean value) {
+        if (value) {
+            mAssConteudo.setVisibility(View.GONE);
+            mAssLoading.setVisibility(View.VISIBLE);
+        } else {
+            mAssConteudo.setVisibility(View.VISIBLE);
+            mAssLoading.setVisibility(View.GONE);
+        }
+    }
+
+    public void concluir(View view) {
+        if (!validarAssinatura()) return;
+        showLoading(true);
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        Handler handler = new Handler(Looper.getMainLooper());
+        executor.execute(() -> handler.post(() -> {
+            salvarDados();
+            toNextActivity();
+        }));
     }
 
 }
