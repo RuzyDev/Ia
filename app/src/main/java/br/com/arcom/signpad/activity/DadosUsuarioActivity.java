@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -25,6 +26,7 @@ import br.com.arcom.signpad.R;
 import br.com.arcom.signpad.util.IntegerParameterUtils;
 import br.com.arcom.signpad.util.IntentParameterUtils;
 import br.com.arcom.signpad.util.MaskEditUtil;
+import br.com.arcom.signpad.util.StringParameterUtils;
 import br.com.arcom.signpad.util.UtilImage;
 import br.com.arcom.signpad.util.UtilValidate;
 
@@ -100,6 +102,7 @@ public class DadosUsuarioActivity extends AppCompatActivity {
     }
 
     public void toActivtyAnterior(View view) {
+        deleteImageTemp();
         onBackPressed();
     }
 
@@ -134,7 +137,6 @@ public class DadosUsuarioActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == IntegerParameterUtils.CAM_REQUEST && resultCode == Activity.RESULT_OK) {
-
             bitmapUsuarioFoto = BitmapFactory.decodeFile(pathToUserPhotoTemp);
             bitmapUsuarioFoto = UtilImage.rotateBitmap(DadosUsuarioActivity.this, photoUri, bitmapUsuarioFoto, pathToUserPhotoTemp);
 
@@ -146,6 +148,20 @@ public class DadosUsuarioActivity extends AppCompatActivity {
             mUsuarioImagem.setTag("usuarioFoto");
             textFotoMsgErro.setVisibility(View.INVISIBLE);
         }
+
+        if (requestCode == IntegerParameterUtils.CAM_REQUEST && resultCode == Activity.RESULT_CANCELED && data == null) {
+            deleteImageTemp();
+        }
     }
 
+    public void deleteImageTemp() {
+        File file = new File(pathToUserPhotoTemp);
+        if (file.delete()) Log.d(StringParameterUtils.TAG_LOG_SIGNPAD, "Arquivo de 0 bytes deletado!");
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        deleteImageTemp();
+    }
 }
