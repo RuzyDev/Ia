@@ -88,7 +88,7 @@ public class DadosUsuarioActivity extends AppCompatActivity {
 
     public boolean validarFoto() {
         String fotoTag = mUsuarioImagem.getTag().toString().trim();
-        if (fotoTag.equals("tirarFoto")) {
+        if (fotoTag.equals("tirarFoto") || UtilImage.countKBytes(pathToUserPhotoTemp) == 0) {
             textFotoMsgErro.setVisibility(View.VISIBLE);
             return false;
         } else {
@@ -137,6 +137,14 @@ public class DadosUsuarioActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == IntegerParameterUtils.CAM_REQUEST && resultCode == Activity.RESULT_OK) {
+
+            if (UtilImage.countKBytes(pathToUserPhotoTemp) == 0) {
+                deleteImageTemp();
+                mUsuarioImagem.setImageResource(R.drawable.ic_usuario_foto2);
+                mUsuarioImagem.setTag("tirarFoto");
+                textFotoMsgErro.setVisibility(View.VISIBLE);
+            }
+
             bitmapUsuarioFoto = BitmapFactory.decodeFile(pathToUserPhotoTemp);
             bitmapUsuarioFoto = UtilImage.rotateBitmap(DadosUsuarioActivity.this, photoUri, bitmapUsuarioFoto, pathToUserPhotoTemp);
 
@@ -151,6 +159,9 @@ public class DadosUsuarioActivity extends AppCompatActivity {
 
         if (requestCode == IntegerParameterUtils.CAM_REQUEST && resultCode == Activity.RESULT_CANCELED && data == null) {
             deleteImageTemp();
+            mUsuarioImagem.setImageResource(R.drawable.ic_usuario_foto2);
+            mUsuarioImagem.setTag("tirarFoto");
+            textFotoMsgErro.setVisibility(View.VISIBLE);
         }
     }
 
