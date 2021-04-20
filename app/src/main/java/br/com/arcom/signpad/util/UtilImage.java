@@ -68,11 +68,6 @@ public class UtilImage {
         return image;
     }
 
-    public static File getPhotoFile(String path) {
-        File image = new File(path);
-        return (image.exists()) ? image : null;
-    }
-
     public static String saveImage(Bitmap myBitmap, String imagemName, Context context) {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         myBitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
@@ -108,14 +103,6 @@ public class UtilImage {
         canvas.drawBitmap(bitmap, 0, 0, new Paint(Paint.FILTER_BITMAP_FLAG));
 
         return scaledBitmap;
-    }
-
-    public static int countKBytes(String path) {
-        File foto = new File(path);
-        if (!foto.exists())  return 0;
-        int kbytes = new BigDecimal(foto.length()).divide(new BigDecimal("1000"), RoundingMode.HALF_UP).intValue();
-        foto = null;
-        return kbytes;
     }
 
 }

@@ -7,7 +7,6 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -25,8 +24,7 @@ import java.io.File;
 import br.com.arcom.signpad.R;
 import br.com.arcom.signpad.util.IntegerParameterUtils;
 import br.com.arcom.signpad.util.IntentParameterUtils;
-import br.com.arcom.signpad.util.MaskEditUtil;
-import br.com.arcom.signpad.util.StringParameterUtils;
+import br.com.arcom.signpad.util.UtilFile;
 import br.com.arcom.signpad.util.UtilImage;
 import br.com.arcom.signpad.util.UtilValidate;
 
@@ -45,7 +43,6 @@ public class DadosUsuarioActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dados_usuario_activity);
         recuperarParametros();
-//        adicionarMascara();
     }
 
     public void recuperarParametros() {
@@ -88,7 +85,7 @@ public class DadosUsuarioActivity extends AppCompatActivity {
 
     public boolean validarFoto() {
         String fotoTag = mUsuarioImagem.getTag().toString().trim();
-        if (fotoTag.equals("tirarFoto") || UtilImage.countKBytes(pathToUserPhotoTemp) == 0) {
+        if (fotoTag.equals("tirarFoto") || UtilFile.countKBytes(pathToUserPhotoTemp) == 0) {
             textFotoMsgErro.setVisibility(View.VISIBLE);
             return false;
         } else {
@@ -97,12 +94,8 @@ public class DadosUsuarioActivity extends AppCompatActivity {
         }
     }
 
-    private void adicionarMascara() {
-        textInputCpf.getEditText().addTextChangedListener(MaskEditUtil.insert(MaskEditUtil.CPF_MASK, textInputCpf.getEditText()));
-    }
-
     public void toActivtyAnterior(View view) {
-        deleteImageTemp();
+        UtilFile.deleteFile(pathToUserPhotoTemp);
         onBackPressed();
     }
 
@@ -138,11 +131,9 @@ public class DadosUsuarioActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == IntegerParameterUtils.CAM_REQUEST && resultCode == Activity.RESULT_OK) {
 
-            if (UtilImage.countKBytes(pathToUserPhotoTemp) == 0) {
-                deleteImageTemp();
-                mUsuarioImagem.setImageResource(R.drawable.ic_usuario_foto2);
-                mUsuarioImagem.setTag("tirarFoto");
-                textFotoMsgErro.setVisibility(View.VISIBLE);
+            if (UtilFile.countKBytes(pathToUserPhotoTemp) == 0) {
+                UtilFile.deleteFile(pathToUserPhotoTemp);
+                defaultUsuarioImagem();
             }
 
             bitmapUsuarioFoto = BitmapFactory.decodeFile(pathToUserPhotoTemp);
@@ -158,26 +149,25 @@ public class DadosUsuarioActivity extends AppCompatActivity {
         }
 
         if (requestCode == IntegerParameterUtils.CAM_REQUEST && resultCode == Activity.RESULT_CANCELED && data == null) {
-            deleteImageTemp();
-            mUsuarioImagem.setImageResource(R.drawable.ic_usuario_foto2);
-            mUsuarioImagem.setTag("tirarFoto");
-            textFotoMsgErro.setVisibility(View.VISIBLE);
+            UtilFile.deleteFile(pathToUserPhotoTemp);
+            defaultUsuarioImagem();
         }
-    }
-
-    public void deleteImageTemp() {
-        File file = new File(pathToUserPhotoTemp);
-        if (file.delete()) Log.d(StringParameterUtils.TAG_LOG_SIGNPAD, "Arquivo de 0 bytes deletado!");
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        deleteImageTemp();
+        UtilFile.deleteFile(pathToUserPhotoTemp);
     }
 
     public String formatarCpf(String cpf) {
         return cpf.substring(0,3)+"."+cpf.substring(3,6)+"."+cpf.substring(6,9)+"-"+cpf.substring(9,11);
+    }
+
+    public void defaultUsuarioImagem() {
+        mUsuarioImagem.setImageResource(R.drawable.ic_usuario_foto2);
+        mUsuarioImagem.setTag("tirarFoto");
+        textFotoMsgErro.setVisibility(View.VISIBLE);
     }
 
 }

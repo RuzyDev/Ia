@@ -15,16 +15,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.arcom.signpad.R;
+import br.com.arcom.signpad.dao.AppDataBase;
+import br.com.arcom.signpad.entities.SigaToken;
 
 public class SignPadActivity extends AppCompatActivity {
 
+    // Room
+    private static AppDataBase appDataBase;
+
     private static final int PERMISSIONS_REQUEST_CODE = 1240;
 
-    private String[] appPermissions = {
+    private final String[] appPermissions = {
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.INTERNET,
-            Manifest.permission.CAMERA
+            Manifest.permission.CAMERA,
+            Manifest.permission.ACCESS_WIFI_STATE,
+            Manifest.permission.ACCESS_NETWORK_STATE,
+            Manifest.permission.CHANGE_NETWORK_STATE,
+            Manifest.permission.CHANGE_WIFI_STATE
     };
 
     @Override
@@ -33,6 +42,10 @@ public class SignPadActivity extends AppCompatActivity {
         setContentView(R.layout.signpad_activity);
         vereficarPermissoes();
         recuperarParametros();
+
+        // Iniciar banco de dados local
+        appDataBase = AppDataBase.getInstance(SignPadActivity.this);
+        appDataBase.close();
     }
 
     public void recuperarParametros() {
@@ -65,5 +78,4 @@ public class SignPadActivity extends AppCompatActivity {
             );
         }
     }
-
 }

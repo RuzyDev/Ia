@@ -7,7 +7,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -31,13 +30,19 @@ import com.kyanogen.signatureview.SignatureView;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Date;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import br.com.arcom.signpad.R;
+import br.com.arcom.signpad.model.Response;
+import br.com.arcom.signpad.services.UsuarioService;
+import br.com.arcom.signpad.util.CustomDialog;
 import br.com.arcom.signpad.util.IntentParameterUtils;
-import br.com.arcom.signpad.util.StringParameterUtils;
 import br.com.arcom.signpad.util.UtilDate;
+import br.com.arcom.signpad.util.UtilFile;
 import br.com.arcom.signpad.util.UtilImage;
 
 public class AssinaturaUsuarioActivity extends AppCompatActivity {
@@ -219,7 +224,7 @@ public class AssinaturaUsuarioActivity extends AppCompatActivity {
             p = new Paragraph(" ");
             document.add(p);
 
-            p = new Paragraph("Uberlândia, " + UtilDate.buscarDataAtual(),
+            p = new Paragraph("Uberlândia, " + UtilDate.buscarDataAtual(true),
                     FontFactory.getFont(FontFactory.defaultEncoding, 12, Font.BOLD, BaseColor.BLACK));
             p.setAlignment(Element.ALIGN_CENTER);
             document.add(p);
@@ -233,7 +238,7 @@ public class AssinaturaUsuarioActivity extends AppCompatActivity {
         return "";
     }
 
-    public void salvarDados() {
+    public String gerarPdf() {
         // Salva imagem da assinatura
         String imagemName = mUsuarioNomeCom.trim() + "-" + mUsuarioCpf.trim() + "-ASSINATURAUSUARIO";
         Bitmap bitmap = mAssinaturaUsuario.getSignatureBitmap();
@@ -241,7 +246,7 @@ public class AssinaturaUsuarioActivity extends AppCompatActivity {
 
         // Rotacionar imagem temporaria
         Bitmap bitmapUsuarioFoto = BitmapFactory.decodeFile(pathUsuarioFotoTemp);
-        File photoFileTemp = UtilImage.getPhotoFile(pathUsuarioFotoTemp);
+        File photoFileTemp = UtilFile.getFile(pathUsuarioFotoTemp);
         Uri photoUri = FileProvider.getUriForFile(AssinaturaUsuarioActivity.this, "br.com.arcom.signpad.fileprovider", photoFileTemp);
         bitmapUsuarioFoto = UtilImage.rotateBitmap(AssinaturaUsuarioActivity.this, photoUri, bitmapUsuarioFoto, pathUsuarioFotoTemp);
 
@@ -251,19 +256,14 @@ public class AssinaturaUsuarioActivity extends AppCompatActivity {
 
         // Criar Pdf
         titlePdf = mUsuarioNomeCom.trim() + "-" + mUsuarioCpf.trim();
-        String pdfPath = criarPdf(pathUsuarioFoto, pathUsuarioAss, titlePdf);
-
-        // Deletar imagens salvas
-        deletarDadosUsuario(pathUsuarioFoto, pathUsuarioAss, pathUsuarioFotoTemp);
+        return criarPdf(pathUsuarioFoto, pathUsuarioAss, titlePdf);
     }
 
-    public void deletarDadosUsuario(String pathUsuarioFoto, String pathUsuarioAss, String pathUsuarioFotoTemp) {
-        File foto = new File(pathUsuarioFoto);
-        if (foto.delete()) Log.d(StringParameterUtils.TAG_LOG_SIGNPAD, "Deleted the file: " + foto.getName());
-        foto = new File(pathUsuarioAss);
-        if (foto.delete()) Log.d(StringParameterUtils.TAG_LOG_SIGNPAD, "Deleted the file: " + foto.getName());
-        foto = new File(pathUsuarioFotoTemp);
-        if (foto.delete()) Log.d(StringParameterUtils.TAG_LOG_SIGNPAD, "Deleted the file: " + foto.getName());
+    public void deletarDadosUsuario(String pathUsuarioFoto, String pathUsuarioAss, String pathUsuarioFotoTemp, String pathPdf) {
+        UtilFile.deleteFile(pathUsuarioFoto);
+        UtilFile.deleteFile(pathUsuarioAss);
+        UtilFile.deleteFile(pathUsuarioFotoTemp);
+        UtilFile.deleteFile(pathPdf);
     }
 
     public void showLoading(Boolean value) {
@@ -279,12 +279,37 @@ public class AssinaturaUsuarioActivity extends AppCompatActivity {
     public void concluir(View view) {
         if (!validarAssinatura()) return;
         showLoading(true);
+        executeThread();
+    }
+
+    private void executeThread() {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         Handler handler = new Handler(Looper.getMainLooper());
         executor.execute(() -> handler.post(() -> {
-            salvarDados();
-            toNextActivity();
+            ExecutorService threadpool = Executors.newCachedThreadPool();
+            Future<Response> futureTask = threadpool.submit(this::salvarDados);
+            while (!futureTask.isDone()) System.out.println("FutureTask ainda não terminou...");
+            threadpool.shutdown();
+
+            try {
+                Response result = futureTask.get();
+                if (!result.getErro()) {
+                    CustomDialog.showDialog(AssinaturaUsuarioActivity.this, result.getMsg());
+                } else {
+                    CustomDialog.showDialog(AssinaturaUsuarioActivity.this, result.getMsg());
+                }
+            } catch (ExecutionException | InterruptedException e) {
+                CustomDialog.showDialog(AssinaturaUsuarioActivity.this, e.getMessage());
+            } finally {
+                showLoading(false);
+            }
         }));
+        executor.shutdown();
+    }
+
+    private Response salvarDados() {
+        String pathPdf = gerarPdf();
+        return UsuarioService.salvarUsuario(AssinaturaUsuarioActivity.this, pathPdf, mUsuarioNomeCom, mUsuarioCpf, new Date());
     }
 
 }
