@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 import br.com.arcom.signpad.R;
 
-public class CustomDialog {
+public class CustomDialogAviso {
     public static void showDialog(Context context, String msg) {
         Dialog dialog = new Dialog(context);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);

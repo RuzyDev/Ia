@@ -7,10 +7,12 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
@@ -30,6 +32,7 @@ import com.kyanogen.signatureview.SignatureView;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -38,8 +41,10 @@ import java.util.concurrent.Future;
 
 import br.com.arcom.signpad.R;
 import br.com.arcom.signpad.model.Response;
+import br.com.arcom.signpad.retrofit.repositories.SigaRepository;
 import br.com.arcom.signpad.services.UsuarioService;
-import br.com.arcom.signpad.util.CustomDialog;
+import br.com.arcom.signpad.util.ConstantesUtils;
+import br.com.arcom.signpad.util.CustomDialogAviso;
 import br.com.arcom.signpad.util.IntentParameterUtils;
 import br.com.arcom.signpad.util.UtilDate;
 import br.com.arcom.signpad.util.UtilFile;
@@ -259,13 +264,6 @@ public class AssinaturaUsuarioActivity extends AppCompatActivity {
         return criarPdf(pathUsuarioFoto, pathUsuarioAss, titlePdf);
     }
 
-    public void deletarDadosUsuario(String pathUsuarioFoto, String pathUsuarioAss, String pathUsuarioFotoTemp, String pathPdf) {
-        UtilFile.deleteFile(pathUsuarioFoto);
-        UtilFile.deleteFile(pathUsuarioAss);
-        UtilFile.deleteFile(pathUsuarioFotoTemp);
-        UtilFile.deleteFile(pathPdf);
-    }
-
     public void showLoading(Boolean value) {
         if (value) {
             mAssConteudo.setVisibility(View.GONE);
@@ -279,27 +277,22 @@ public class AssinaturaUsuarioActivity extends AppCompatActivity {
     public void concluir(View view) {
         if (!validarAssinatura()) return;
         showLoading(true);
-        executeThread();
-    }
-
-    private void executeThread() {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         Handler handler = new Handler(Looper.getMainLooper());
         executor.execute(() -> handler.post(() -> {
             ExecutorService threadpool = Executors.newCachedThreadPool();
             Future<Response> futureTask = threadpool.submit(this::salvarDados);
-            while (!futureTask.isDone()) System.out.println("FutureTask ainda não terminou...");
             threadpool.shutdown();
 
             try {
                 Response result = futureTask.get();
                 if (!result.getErro()) {
-                    CustomDialog.showDialog(AssinaturaUsuarioActivity.this, result.getMsg());
+                    toNextActivity();
                 } else {
-                    CustomDialog.showDialog(AssinaturaUsuarioActivity.this, result.getMsg());
+                    CustomDialogAviso.showDialog(AssinaturaUsuarioActivity.this, result.getMsg());
                 }
             } catch (ExecutionException | InterruptedException e) {
-                CustomDialog.showDialog(AssinaturaUsuarioActivity.this, e.getMessage());
+                CustomDialogAviso.showDialog(AssinaturaUsuarioActivity.this, e.getMessage());
             } finally {
                 showLoading(false);
             }

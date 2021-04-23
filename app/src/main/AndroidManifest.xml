@@ -16,13 +16,14 @@
 
     <application
         android:debuggable="true"
-        android:allowBackup="true"
+        android:allowBackup="false"
         android:label="@string/app_name"
         android:icon="@mipmap/ic_icon"
         android:supportsRtl="true"
         android:usesCleartextTraffic="true"
         android:theme="@style/Theme.SignPad"
-        tools:ignore="HardcodedDebugMode">
+        tools:ignore="HardcodedDebugMode"
+        tools:replace="android:allowBackup">
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="br.com.arcom.signpad.fileprovider"

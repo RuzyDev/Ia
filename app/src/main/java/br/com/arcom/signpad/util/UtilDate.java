@@ -1,6 +1,7 @@
 package br.com.arcom.signpad.util;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 public class UtilDate {
@@ -14,6 +15,13 @@ public class UtilDate {
 
     public static String buscarDataAtual(Date date, Boolean time) {
         return time ? sdf1.format(date) : sdf2.format(new Date());
+    }
+
+    public static Date addHoursToJavaUtilDate(Date date, int hours) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(Calendar.HOUR_OF_DAY, hours);
+        return calendar.getTime();
     }
 
 }

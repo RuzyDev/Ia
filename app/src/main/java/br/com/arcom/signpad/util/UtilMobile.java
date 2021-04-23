@@ -1,7 +1,5 @@
 package br.com.arcom.signpad.util;
 
-import java.util.Date;
-
 public class UtilMobile {
 
     public static String getPassword() {

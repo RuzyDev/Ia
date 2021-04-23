@@ -13,11 +13,6 @@ public class IntentParameterUtils {
     public static final String USUARIO_CPF = "usuarioCpf";
 
     /**
-     * Identifica o USUARIO FOTO PATH
-     */
-    public static final String USUARIO_FOTO_PATH = "usuarioFotoPath";
-
-    /**
      * Identifica o USUARIO FOTO PATH TEMP
      */
     public static final String USUARIO_FOTO_PATH_TEMP = "usuarioFotoPathTemp";
