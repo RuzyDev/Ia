@@ -1,4 +1,4 @@
-package br.com.arcom.signpad.entities;
+package br.com.arcom.signpad.data;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;

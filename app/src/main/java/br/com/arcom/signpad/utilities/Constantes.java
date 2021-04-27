@@ -1,6 +1,6 @@
-package br.com.arcom.signpad.util;
+package br.com.arcom.signpad.utilities;
 
-public interface ConstantesUtils {
+public interface Constantes {
 
     String TAG_LOG_SIGNPAD = "tagLogSignpad";
     String DATABASE_NAME = "signpad_database.db";

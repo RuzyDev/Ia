@@ -1,10 +1,11 @@
-package br.com.arcom.signpad.entities;
+package br.com.arcom.signpad.data;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity(tableName = "usuario")
@@ -18,7 +19,7 @@ public class Usuario implements Serializable {
     private String nome;
 
     @ColumnInfo(name = "cpf")
-    private String cpf;
+    private Long cpf;
 
     @ColumnInfo(name = "data_preenchimento")
     private Date dataPreenchimento;
@@ -39,11 +40,11 @@ public class Usuario implements Serializable {
         this.nome = nome;
     }
 
-    public String getCpf() {
+    public Long getCpf() {
         return cpf;
     }
 
-    public void setCpf(String cpf) {
+    public void setCpf(Long cpf) {
         this.cpf = cpf;
     }
 

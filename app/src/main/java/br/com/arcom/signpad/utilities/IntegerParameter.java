@@ -1,6 +1,6 @@
-package br.com.arcom.signpad.util;
+package br.com.arcom.signpad.utilities;
 
-public class IntegerParameterUtils {
+public class IntegerParameter {
 
     /**
      * Identifica o CAM REQUEST

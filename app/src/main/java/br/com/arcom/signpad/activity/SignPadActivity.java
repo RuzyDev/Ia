@@ -15,8 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.arcom.signpad.R;
-import br.com.arcom.signpad.dao.AppDataBase;
-import br.com.arcom.signpad.entities.SigaToken;
+import br.com.arcom.signpad.data.AppDataBase;
 
 public class SignPadActivity extends AppCompatActivity {
 

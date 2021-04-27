@@ -1,4 +1,4 @@
-package br.com.arcom.signpad.util;
+package br.com.arcom.signpad.utilities;
 
 import android.util.Log;
 
@@ -23,7 +23,7 @@ public class UtilFile {
 
     public static void deleteFile(String path) {
         File file = new File(path);
-        if (file.delete()) Log.d(ConstantesUtils.TAG_LOG_SIGNPAD, "Arquivo deletado!");
+        if (file.delete()) Log.d(Constantes.TAG_LOG_SIGNPAD, "Arquivo deletado!");
     }
 
 }

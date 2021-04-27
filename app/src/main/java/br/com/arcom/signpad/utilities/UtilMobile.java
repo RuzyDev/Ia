@@ -1,4 +1,4 @@
-package br.com.arcom.signpad.util;
+package br.com.arcom.signpad.utilities;
 
 public class UtilMobile {
 
@@ -8,7 +8,7 @@ public class UtilMobile {
         String sSenha;
 
         // Calcula Senha do dia
-        String dateHoje = UtilDate.buscarDataAtual(false);
+        String dateHoje = UtilDate.buscarDataAtual(UtilDate.DATE);
         lAno = Long.parseLong(dateHoje.substring(6, 10));
         sSenha = dateHoje.replace("/", "");
         senha = Long.parseLong(sSenha);

@@ -1,4 +1,4 @@
-package br.com.arcom.signpad.dao;
+package br.com.arcom.signpad.data;
 
 import android.content.Context;
 
@@ -7,10 +7,7 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 
-import br.com.arcom.signpad.dao.converters.DateConverter;
-import br.com.arcom.signpad.entities.SigaToken;
-import br.com.arcom.signpad.entities.Usuario;
-import br.com.arcom.signpad.util.ConstantesUtils;
+import br.com.arcom.signpad.utilities.Constantes;
 
 @Database(
         entities = {
@@ -18,15 +15,15 @@ import br.com.arcom.signpad.util.ConstantesUtils;
                 Usuario.class
         }
         , version = 1)
-@TypeConverters({DateConverter.class})
+@TypeConverters({Converters.class})
 public abstract class AppDataBase extends RoomDatabase {
 
     private static AppDataBase dataBase;
 
     public synchronized static AppDataBase getInstance(Context context) {
-        if (dataBase == null) {
+        if (dataBase == null || !dataBase.isOpen()) {
             dataBase = Room.databaseBuilder(context.getApplicationContext()
-            , AppDataBase.class, ConstantesUtils.DATABASE_NAME)
+                    , AppDataBase.class, Constantes.DATABASE_NAME)
                     .allowMainThreadQueries()
                     .fallbackToDestructiveMigration()
                     .build();

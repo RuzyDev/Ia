@@ -22,11 +22,11 @@ import com.google.android.material.textfield.TextInputLayout;
 import java.io.File;
 
 import br.com.arcom.signpad.R;
-import br.com.arcom.signpad.util.IntegerParameterUtils;
-import br.com.arcom.signpad.util.IntentParameterUtils;
-import br.com.arcom.signpad.util.UtilFile;
-import br.com.arcom.signpad.util.UtilImage;
-import br.com.arcom.signpad.util.UtilValidate;
+import br.com.arcom.signpad.utilities.IntegerParameter;
+import br.com.arcom.signpad.utilities.IntentParameter;
+import br.com.arcom.signpad.utilities.UtilFile;
+import br.com.arcom.signpad.utilities.UtilImage;
+import br.com.arcom.signpad.utilities.UtilValidate;
 
 public class DadosUsuarioActivity extends AppCompatActivity {
 
@@ -102,14 +102,14 @@ public class DadosUsuarioActivity extends AppCompatActivity {
     public void toNextActivity(View view) {
         if (!validarNome() | !validarCpf() | !validarFoto()) return;
         String nomeUsuario = textInputNome.getEditText().getText().toString().trim();
-        String cpfUsuario = formatarCpf(textInputCpf.getEditText().getText().toString().trim());
+        Long cpfUsuario = Long.valueOf(textInputCpf.getEditText().getText().toString().trim());
         String imagemName = nomeUsuario+"-"+cpfUsuario+"-FOTOUSUARIO";
 
         Intent intent = new Intent(DadosUsuarioActivity.this, AssinaturaUsuarioActivity.class);
-        intent.putExtra(IntentParameterUtils.USUARIO_NOME_COMPLETO, nomeUsuario);
-        intent.putExtra(IntentParameterUtils.USUARIO_CPF, cpfUsuario);
-        intent.putExtra(IntentParameterUtils.USUARIO_FOTO_NAME, imagemName);
-        intent.putExtra(IntentParameterUtils.USUARIO_FOTO_PATH_TEMP, pathToUserPhotoTemp);
+        intent.putExtra(IntentParameter.USUARIO_NOME_COMPLETO, nomeUsuario);
+        intent.putExtra(IntentParameter.USUARIO_CPF, cpfUsuario);
+        intent.putExtra(IntentParameter.USUARIO_FOTO_NAME, imagemName);
+        intent.putExtra(IntentParameter.USUARIO_FOTO_PATH_TEMP, pathToUserPhotoTemp);
         startActivity(intent);
     }
 
@@ -121,7 +121,7 @@ public class DadosUsuarioActivity extends AppCompatActivity {
                 pathToUserPhotoTemp = photoFile.getAbsolutePath();
                 photoUri = FileProvider.getUriForFile(DadosUsuarioActivity.this, "br.com.arcom.signpad.fileprovider", photoFile);
                 cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
-                startActivityForResult(cameraIntent, IntegerParameterUtils.CAM_REQUEST);
+                startActivityForResult(cameraIntent, IntegerParameter.CAM_REQUEST);
             }
         }
     }
@@ -129,7 +129,7 @@ public class DadosUsuarioActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == IntegerParameterUtils.CAM_REQUEST && resultCode == Activity.RESULT_OK) {
+        if (requestCode == IntegerParameter.CAM_REQUEST && resultCode == Activity.RESULT_OK) {
 
             if (UtilFile.countKBytes(pathToUserPhotoTemp) == 0) {
                 UtilFile.deleteFile(pathToUserPhotoTemp);
@@ -148,7 +148,7 @@ public class DadosUsuarioActivity extends AppCompatActivity {
             textFotoMsgErro.setVisibility(View.INVISIBLE);
         }
 
-        if (requestCode == IntegerParameterUtils.CAM_REQUEST && resultCode == Activity.RESULT_CANCELED && data == null) {
+        if (requestCode == IntegerParameter.CAM_REQUEST && resultCode == Activity.RESULT_CANCELED && data == null) {
             UtilFile.deleteFile(pathToUserPhotoTemp);
             defaultUsuarioImagem();
         }
@@ -158,10 +158,6 @@ public class DadosUsuarioActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
         UtilFile.deleteFile(pathToUserPhotoTemp);
-    }
-
-    public String formatarCpf(String cpf) {
-        return cpf.substring(0,3)+"."+cpf.substring(3,6)+"."+cpf.substring(6,9)+"-"+cpf.substring(9,11);
     }
 
     public void defaultUsuarioImagem() {

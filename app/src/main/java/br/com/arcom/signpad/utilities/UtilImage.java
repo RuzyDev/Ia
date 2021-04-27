@@ -1,4 +1,4 @@
-package br.com.arcom.signpad.util;
+package br.com.arcom.signpad.utilities;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -15,8 +15,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 
 public class UtilImage {
 

@@ -1,6 +1,6 @@
-package br.com.arcom.signpad.util;
+package br.com.arcom.signpad.utilities;
 
-public class IntentParameterUtils {
+public class IntentParameter {
 
     /**
      * Identifica o USUARIO NOME COMPLETO

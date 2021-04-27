@@ -1,4 +1,4 @@
-package br.com.arcom.signpad.util;
+package br.com.arcom.signpad.utilities;
 
 import java.util.InputMismatchException;
 

@@ -1,4 +1,4 @@
-package br.com.arcom.signpad.util;
+package br.com.arcom.signpad.utilities;
 
 import android.app.Dialog;
 import android.content.Context;

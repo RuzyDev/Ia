@@ -1,14 +1,12 @@
-package br.com.arcom.signpad.dao;
+package br.com.arcom.signpad.data;
 
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
-
-import br.com.arcom.signpad.entities.Usuario;
 
 import static androidx.room.OnConflictStrategy.REPLACE;
 
@@ -37,5 +35,5 @@ public interface UsuarioDAO {
     void deleteAll(List<Usuario> usuarios);
 
     @Query("UPDATE usuario SET nome = :nome, cpf = :cpf, data_preenchimento = :dataPreenchimento WHERE id = :sID")
-    void update(int sID, String nome, String cpf, Date dataPreenchimento);
+    void update(int sID, String nome, Long cpf, LocalDateTime dataPreenchimento);
 }

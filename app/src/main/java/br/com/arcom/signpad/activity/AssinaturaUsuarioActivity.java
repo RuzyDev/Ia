@@ -12,7 +12,6 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
@@ -32,7 +31,6 @@ import com.kyanogen.signatureview.SignatureView;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -40,22 +38,22 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import br.com.arcom.signpad.R;
-import br.com.arcom.signpad.model.Response;
-import br.com.arcom.signpad.retrofit.repositories.SigaRepository;
+import br.com.arcom.signpad.model.PdfTermoCompromisso;
+import br.com.arcom.signpad.model.SigaResponse;
 import br.com.arcom.signpad.services.UsuarioService;
-import br.com.arcom.signpad.util.ConstantesUtils;
-import br.com.arcom.signpad.util.CustomDialogAviso;
-import br.com.arcom.signpad.util.IntentParameterUtils;
-import br.com.arcom.signpad.util.UtilDate;
-import br.com.arcom.signpad.util.UtilFile;
-import br.com.arcom.signpad.util.UtilImage;
+import br.com.arcom.signpad.utilities.Constantes;
+import br.com.arcom.signpad.utilities.CustomDialogAviso;
+import br.com.arcom.signpad.utilities.IntentParameter;
+import br.com.arcom.signpad.utilities.UtilDate;
+import br.com.arcom.signpad.utilities.UtilFile;
+import br.com.arcom.signpad.utilities.UtilImage;
 
 public class AssinaturaUsuarioActivity extends AppCompatActivity {
 
     private static String pathUsuarioFoto;
     private static String pathUsuarioFotoTemp;
     private String mUsuarioNomeCom;
-    private String mUsuarioCpf;
+    private Long mUsuarioCpf;
     private String pathUsuarioAss;
     private String titlePdf;
     private String usuarioFotoName;
@@ -76,10 +74,10 @@ public class AssinaturaUsuarioActivity extends AppCompatActivity {
         mAssConteudo = findViewById(R.id.view_ass_conteudo);
         mAssLoading = findViewById(R.id.view_ass_progressBar);
 
-        mUsuarioNomeCom = getIntent().getExtras().getString(IntentParameterUtils.USUARIO_NOME_COMPLETO);
-        mUsuarioCpf = getIntent().getExtras().getString(IntentParameterUtils.USUARIO_CPF);
-        usuarioFotoName = getIntent().getExtras().getString(IntentParameterUtils.USUARIO_FOTO_NAME);
-        pathUsuarioFotoTemp = getIntent().getExtras().getString(IntentParameterUtils.USUARIO_FOTO_PATH_TEMP);
+        mUsuarioNomeCom = getIntent().getExtras().getString(IntentParameter.USUARIO_NOME_COMPLETO);
+        mUsuarioCpf = getIntent().getExtras().getLong(IntentParameter.USUARIO_CPF);
+        usuarioFotoName = getIntent().getExtras().getString(IntentParameter.USUARIO_FOTO_NAME);
+        pathUsuarioFotoTemp = getIntent().getExtras().getString(IntentParameter.USUARIO_FOTO_PATH_TEMP);
     }
 
     public void toActivtyAnterior(View view) {
@@ -104,148 +102,11 @@ public class AssinaturaUsuarioActivity extends AppCompatActivity {
         mAssinaturaUsuario.clearCanvas();
     }
 
-    public String criarPdf(String pathUsuarioFoto, String pathUsuarioAss, String titlePdf) {
-        File pdfDirectory = new File(String.valueOf(ContextCompat.getExternalFilesDirs(getApplicationContext(), null)[0]));
-        if (!pdfDirectory.exists()) pdfDirectory.mkdirs();
-
-        Document document = new Document();
-        try {
-            File f = new File(pdfDirectory, titlePdf + ".pdf");
-            f.createNewFile();
-            FileOutputStream fo = new FileOutputStream(f);
-            PdfWriter.getInstance(document, fo);
-            document.open();
-
-            // Inserir titulo
-            Paragraph p = new Paragraph("TERMO DE CONSENTIMENTO DE COLETA DE DADOS",
-                    FontFactory.getFont(FontFactory.defaultEncoding, 16, Font.BOLD, BaseColor.BLACK));
-            p.setLeading(1, 1);
-            p.setAlignment(Element.ALIGN_CENTER);
-            document.add(p);
-
-            // Inserir espaço
-            p = new Paragraph(" ");
-            document.add(p);
-
-            // Inserir texto informativo 1
-            p = new Paragraph("Considerando o interesse expresso do signatário em adentrar nas dependências da empresa Arcom S/A, este termo" +
-                    " tem por finalidade registrar a manifestação livre, informada e inequívoca pela qual o titular concorda com a utilização de" +
-                    " seus dados pessoais abaixo identificados para finalidades específicas, nos moldes da Lei 13.709 de 14 de agosto de 2018 -" +
-                    " Lei Geral de Proteção de Dados Pessoais (LGPD).",
-                    FontFactory.getFont(FontFactory.defaultEncoding, 12, Font.NORMAL, BaseColor.BLACK));
-            p.setLeading(1, 1);
-            p.setAlignment(Element.ALIGN_JUSTIFIED);
-            document.add(p);
-
-            // Inserir espaço
-            p = new Paragraph(" ");
-            document.add(p);
-
-            // Inserir texto informativo 1
-            p = new Paragraph("Com a assinatura, o titular autoriza a empresa Arcom S/A, inscrita no CNPJ sob o n° 25.769.266/0001-24 a" +
-                    " registrar o acesso do signatário na portaria da empresa, em cumprimento às medidas de segurança interna" +
-                    " adotadas pela sociedade empresária.",
-                    FontFactory.getFont(FontFactory.defaultEncoding, 12, Font.NORMAL, BaseColor.BLACK));
-            p.setLeading(1, 1);
-            p.setAlignment(Element.ALIGN_JUSTIFIED);
-            document.add(p);
-
-            // Inserir espaço
-            p = new Paragraph(" ");
-            document.add(p);
-
-            // Inserir texto informativo 1
-            p = new Paragraph("Estes dados não serão compartilhados com outras empresas, salvo por expressa determinação legal, permanecendo" +
-                    " arquivados no banco de dados da Arcom S/A, seguindo todos os protocolos de segurança da informação necessários para " +
-                    "a garantia de não violação destes elementos.",
-                    FontFactory.getFont(FontFactory.defaultEncoding, 12, Font.NORMAL, BaseColor.BLACK));
-            p.setLeading(1, 1);
-            p.setAlignment(Element.ALIGN_JUSTIFIED);
-            document.add(p);
-
-            // Inserir espaço
-            p = new Paragraph(" ");
-            document.add(p);
-
-            // Inserir texto informativo 1
-            p = new Paragraph("Com isso, a identificação abaixo, por meio de foto e assinatura pessoal, expressa a irrestrita" +
-                    " concordância com o acima exposto.",
-                    FontFactory.getFont(FontFactory.defaultEncoding, 12, Font.NORMAL, BaseColor.BLACK));
-            p.setLeading(1, 1);
-            p.setAlignment(Element.ALIGN_JUSTIFIED);
-            document.add(p);
-
-            // Inserir espaço
-            p = new Paragraph(" ");
-            document.add(p);
-
-            // Inserir dados fornecidos pelo usuario
-            p.setLeading(1, 1);
-            p.setAlignment(Element.ALIGN_LEFT);
-            p = new Paragraph("Nome: " + mUsuarioNomeCom,
-                    FontFactory.getFont(FontFactory.defaultEncoding, 12, Font.BOLD, BaseColor.BLACK));
-            document.add(p);
-            p = new Paragraph("CPF: " + mUsuarioCpf,
-                    FontFactory.getFont(FontFactory.defaultEncoding, 12, Font.BOLD, BaseColor.BLACK));
-            document.add(p);
-            p = new Paragraph("Foto: ",
-                    FontFactory.getFont(FontFactory.defaultEncoding, 12, Font.BOLD, BaseColor.BLACK));
-            document.add(p);
-
-            Image figura = Image.getInstance(pathUsuarioFoto);
-            figura.scalePercent(20, 20);
-            Chunk chunk = new Chunk(figura, 0, 0, true);
-            p = new Paragraph(chunk);
-            p.setAlignment(Element.ALIGN_CENTER);
-            document.add(p);
-
-            p = new Paragraph(" ");
-            document.add(p);
-            p = new Paragraph(" ");
-            document.add(p);
-            p = new Paragraph(" ");
-            document.add(p);
-            p = new Paragraph(" ");
-            document.add(p);
-            p = new Paragraph(" ");
-            document.add(p);
-
-            figura = Image.getInstance(pathUsuarioAss);
-            figura.scalePercent(15, 15);
-            chunk = new Chunk(figura, 0, 0, true);
-            p = new Paragraph(chunk);
-            p.setAlignment(Element.ALIGN_CENTER);
-            document.add(p);
-
-            p = new Paragraph("_______________________________________________________________",
-                    FontFactory.getFont(FontFactory.defaultEncoding, 12, Font.BOLD, BaseColor.BLACK));
-            p.setAlignment(Element.ALIGN_CENTER);
-            document.add(p);
-            p = new Paragraph("Assinatura.",
-                    FontFactory.getFont(FontFactory.defaultEncoding, 12, Font.BOLD, BaseColor.BLACK));
-            p.setAlignment(Element.ALIGN_CENTER);
-            document.add(p);
-
-            p = new Paragraph(" ");
-            document.add(p);
-
-            p = new Paragraph("Uberlândia, " + UtilDate.buscarDataAtual(true),
-                    FontFactory.getFont(FontFactory.defaultEncoding, 12, Font.BOLD, BaseColor.BLACK));
-            p.setAlignment(Element.ALIGN_CENTER);
-            document.add(p);
-
-            document.close();
-            fo.close();
-            return f.getAbsolutePath();
-        } catch (DocumentException | IOException de) {
-            de.printStackTrace();
-        }
-        return "";
-    }
-
-    public String gerarPdf() {
+    public String gerarPdf(Date dataPreechimento) {
         // Salva imagem da assinatura
-        String imagemName = mUsuarioNomeCom.trim() + "-" + mUsuarioCpf.trim() + "-ASSINATURAUSUARIO";
+
+        String cpfVisitante = formatarCpf(mUsuarioCpf.toString());
+        String imagemName = mUsuarioNomeCom.trim() + "-" + cpfVisitante + "-ASSINATURAUSUARIO";
         Bitmap bitmap = mAssinaturaUsuario.getSignatureBitmap();
         pathUsuarioAss = UtilImage.saveImage(bitmap, imagemName, AssinaturaUsuarioActivity.this);
 
@@ -260,8 +121,8 @@ public class AssinaturaUsuarioActivity extends AppCompatActivity {
         pathUsuarioFoto = UtilImage.saveImage(bitmapUsuarioFoto, usuarioFotoName, AssinaturaUsuarioActivity.this);
 
         // Criar Pdf
-        titlePdf = mUsuarioNomeCom.trim() + "-" + mUsuarioCpf.trim();
-        return criarPdf(pathUsuarioFoto, pathUsuarioAss, titlePdf);
+        titlePdf = mUsuarioNomeCom.trim() + "-" + cpfVisitante;
+        return PdfTermoCompromisso.criarPdf(AssinaturaUsuarioActivity.this, mUsuarioNomeCom, cpfVisitante, pathUsuarioFoto, pathUsuarioAss, titlePdf, dataPreechimento);
     }
 
     public void showLoading(Boolean value) {
@@ -281,12 +142,14 @@ public class AssinaturaUsuarioActivity extends AppCompatActivity {
         Handler handler = new Handler(Looper.getMainLooper());
         executor.execute(() -> handler.post(() -> {
             ExecutorService threadpool = Executors.newCachedThreadPool();
-            Future<Response> futureTask = threadpool.submit(this::salvarDados);
+            Future<SigaResponse> futureTask = threadpool.submit(this::salvarDados);
             threadpool.shutdown();
 
             try {
-                Response result = futureTask.get();
+                SigaResponse result = futureTask.get();
                 if (!result.getErro()) {
+//                    CustomDialogAviso.showDialog(AssinaturaUsuarioActivity.this, result.getMsg());
+//                    Log.d(Constantes.TAG_LOG_SIGNPAD, result.getMsg());
                     toNextActivity();
                 } else {
                     CustomDialogAviso.showDialog(AssinaturaUsuarioActivity.this, result.getMsg());
@@ -300,9 +163,14 @@ public class AssinaturaUsuarioActivity extends AppCompatActivity {
         executor.shutdown();
     }
 
-    private Response salvarDados() {
-        String pathPdf = gerarPdf();
-        return UsuarioService.salvarUsuario(AssinaturaUsuarioActivity.this, pathPdf, mUsuarioNomeCom, mUsuarioCpf, new Date());
+    private SigaResponse salvarDados() {
+        Date dataPreen = new Date();
+        String pathPdf = gerarPdf(dataPreen);
+        return UsuarioService.salvarUsuario(AssinaturaUsuarioActivity.this, pathPdf, mUsuarioNomeCom, mUsuarioCpf, dataPreen);
+    }
+
+    public String formatarCpf(String cpf) {
+        return cpf.substring(0, 3) + "." + cpf.substring(3, 6) + "." + cpf.substring(6, 9) + "-" + cpf.substring(9, 11);
     }
 
 }

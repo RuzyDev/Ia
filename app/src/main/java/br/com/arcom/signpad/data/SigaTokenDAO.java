@@ -1,4 +1,4 @@
-package br.com.arcom.signpad.dao;
+package br.com.arcom.signpad.data;
 
 import androidx.room.Dao;
 import androidx.room.Delete;
@@ -7,8 +7,6 @@ import androidx.room.Query;
 
 import java.util.Date;
 import java.util.List;
-
-import br.com.arcom.signpad.entities.SigaToken;
 
 import static androidx.room.OnConflictStrategy.REPLACE;
 

@@ -1,9 +1,8 @@
-package br.com.arcom.signpad.retrofit.services;
+package br.com.arcom.signpad.api;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import br.com.arcom.signpad.retrofit.api.SigaApi;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
