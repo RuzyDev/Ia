@@ -8,8 +8,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import br.com.arcom.signpad.model.SigaResponse;
-import br.com.arcom.signpad.model.UsuarioRequest;
+import br.com.arcom.signpad.models.SigaResponse;
+import br.com.arcom.signpad.models.UsuarioRequest;
 import br.com.arcom.signpad.utilities.UtilDate;
 import br.com.arcom.signpad.utilities.UtilMobile;
 import okhttp3.MediaType;

@@ -7,30 +7,16 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
-import com.itextpdf.text.BaseColor;
-import com.itextpdf.text.Chunk;
-import com.itextpdf.text.Document;
-import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.Element;
-import com.itextpdf.text.Font;
-import com.itextpdf.text.FontFactory;
-import com.itextpdf.text.Image;
-import com.itextpdf.text.Paragraph;
-import com.itextpdf.text.pdf.PdfWriter;
 import com.kyanogen.signatureview.SignatureView;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.Date;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -38,13 +24,11 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import br.com.arcom.signpad.R;
-import br.com.arcom.signpad.model.PdfTermoCompromisso;
-import br.com.arcom.signpad.model.SigaResponse;
+import br.com.arcom.signpad.models.PdfTermoCompromisso;
+import br.com.arcom.signpad.models.SigaResponse;
 import br.com.arcom.signpad.services.UsuarioService;
-import br.com.arcom.signpad.utilities.Constantes;
 import br.com.arcom.signpad.utilities.CustomDialogAviso;
 import br.com.arcom.signpad.utilities.IntentParameter;
-import br.com.arcom.signpad.utilities.UtilDate;
 import br.com.arcom.signpad.utilities.UtilFile;
 import br.com.arcom.signpad.utilities.UtilImage;
 

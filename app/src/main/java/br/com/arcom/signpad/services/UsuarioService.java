@@ -1,7 +1,6 @@
 package br.com.arcom.signpad.services;
 
 import android.content.Context;
-import android.util.Log;
 
 import java.util.Date;
 
@@ -9,8 +8,7 @@ import br.com.arcom.signpad.api.SigaRepository;
 import br.com.arcom.signpad.data.AppDataBase;
 import br.com.arcom.signpad.data.SigaToken;
 import br.com.arcom.signpad.data.Usuario;
-import br.com.arcom.signpad.model.SigaResponse;
-import br.com.arcom.signpad.utilities.Constantes;
+import br.com.arcom.signpad.models.SigaResponse;
 import br.com.arcom.signpad.utilities.UtilDate;
 
 public class UsuarioService {

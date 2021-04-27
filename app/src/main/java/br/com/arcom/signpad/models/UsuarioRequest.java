@@ -1,4 +1,4 @@
-package br.com.arcom.signpad.model;
+package br.com.arcom.signpad.models;
 
 import com.google.gson.annotations.SerializedName;
 

@@ -1,6 +1,6 @@
 package br.com.arcom.signpad.api;
 
-import br.com.arcom.signpad.model.UsuarioRequest;
+import br.com.arcom.signpad.models.UsuarioRequest;
 import okhttp3.MultipartBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
