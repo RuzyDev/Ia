@@ -16,11 +16,11 @@ public interface UsuarioDAO {
     @Query("SELECT * FROM usuario")
     List<Usuario> getAll();
 
-    @Query("SELECT * FROM usuario WHERE id = :sID")
-    Usuario getById(int sID);
+    @Query("SELECT * FROM usuario WHERE cpf = :cpf")
+    Usuario getById(Long cpf);
 
-    @Query("SELECT * FROM usuario WHERE id IN (:userIds)")
-    List<Usuario> loadAllByIds(int[] userIds);
+    @Query("SELECT * FROM usuario WHERE cpf IN (:userCpfs)")
+    List<Usuario> loadAllByIds(Long[] userCpfs);
 
     @Insert
     void insertAll(Usuario... usuarios);
@@ -34,6 +34,6 @@ public interface UsuarioDAO {
     @Delete
     void deleteAll(List<Usuario> usuarios);
 
-    @Query("UPDATE usuario SET nome = :nome, cpf = :cpf, data_preenchimento = :dataPreenchimento WHERE id = :sID")
-    void update(int sID, String nome, Long cpf, LocalDateTime dataPreenchimento);
+    @Query("UPDATE usuario SET nome = :nome, data_preenchimento = :dataPreenchimento, path_pdf = :pdfPath WHERE cpf = :cpf")
+    void update(Long cpf, String nome, LocalDateTime dataPreenchimento, String pdfPath);
 }

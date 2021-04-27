@@ -12,28 +12,18 @@ import java.util.Date;
 public class Usuario implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    @PrimaryKey(autoGenerate = true)
-    private Integer id;
+    @PrimaryKey
+    @ColumnInfo(name = "cpf")
+    private Long cpf;
 
     @ColumnInfo(name = "nome")
     private String nome;
-
-    @ColumnInfo(name = "cpf")
-    private Long cpf;
 
     @ColumnInfo(name = "data_preenchimento")
     private Date dataPreenchimento;
 
     @ColumnInfo(name = "path_pdf")
     private String pathPdf;
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
 
     public String getNome() {
         return nome;
@@ -70,9 +60,8 @@ public class Usuario implements Serializable {
     @Override
     public String toString() {
         return "Usuario{" +
-                "id=" + id +
+                "cpf=" + cpf +
                 ", nome='" + nome + '\'' +
-                ", cpf=" + cpf +
                 ", dataPreenchimento=" + dataPreenchimento +
                 ", pathPdf='" + pathPdf + '\'' +
                 '}';
