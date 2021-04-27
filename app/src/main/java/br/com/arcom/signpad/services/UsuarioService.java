@@ -2,7 +2,9 @@ package br.com.arcom.signpad.services;
 
 import android.content.Context;
 
+import java.io.File;
 import java.util.Date;
+import java.util.List;
 
 import br.com.arcom.signpad.api.SigaRepository;
 import br.com.arcom.signpad.data.AppDataBase;
@@ -19,14 +21,33 @@ public class UsuarioService {
         SigaResponse sigaResponse = getSigaToken(context);
 
         if (!sigaResponse.getErro()) {
-            return salvarDados(sigaResponse.getMsg(), pathPdf, mUsuarioNomeCom, mUsuarioCpf, dataPreechimento);
+            List<Usuario> usuarioList = appDataBase.usuarioDAO().getAll();
+            if (usuarioList.size() > 0) {
+                for (Usuario usuario : usuarioList) {
+                    SigaResponse response = salvarDados(sigaResponse.getMsg(), usuario.getPathPdf(), usuario.getNome(), usuario.getCpf(), usuario.getDataPreenchimento());
+                    if (!response.getErro()) {
+                        File file = new File(usuario.getPathPdf());
+                        file.delete();
+                        appDataBase.usuarioDAO().delete(usuario);
+                    } else {
+                        salvarDadosLocalmente(mUsuarioNomeCom, mUsuarioCpf, dataPreechimento, pathPdf);
+                        return new SigaResponse(false, sigaResponse.getMsg());
+                    }
+                }
+            }
+
+            SigaResponse response = salvarDados(sigaResponse.getMsg(), pathPdf, mUsuarioNomeCom, mUsuarioCpf, dataPreechimento);
+            if (sigaResponse.getErro()) {
+                salvarDadosLocalmente(mUsuarioNomeCom, mUsuarioCpf, dataPreechimento, pathPdf);
+                return new SigaResponse(false, sigaResponse.getMsg());
+            } else {
+                File file = new File(pathPdf);
+                file.delete();
+            }
+            return response;
         }
 
-        Usuario usuario = new Usuario();
-        usuario.setNome(mUsuarioNomeCom);
-        usuario.setCpf(mUsuarioCpf);
-        usuario.setDataPreenchimento(dataPreechimento);
-        appDataBase.usuarioDAO().insert(usuario);
+        salvarDadosLocalmente(mUsuarioNomeCom, mUsuarioCpf, dataPreechimento, pathPdf);
         return new SigaResponse(false, sigaResponse.getMsg());
     }
 
@@ -66,6 +87,15 @@ public class UsuarioService {
         SigaRepository sigaRepository = SigaRepository.getInstance();
         SigaResponse sigaResponse = sigaRepository.salvarDados(sigaToken, pathPdf, mUsuarioNomeCom, mUsuarioCpf, dataPreechimento);
         return (!sigaResponse.getErro()) ? new SigaResponse(false, sigaResponse.getMsg()) : new SigaResponse(true, sigaResponse.getMsg());
+    }
+
+    private static void salvarDadosLocalmente(String nome, Long cpf, Date dataPreechimento, String pathPdf) {
+        Usuario usuario = new Usuario();
+        usuario.setNome(nome);
+        usuario.setCpf(cpf);
+        usuario.setDataPreenchimento(dataPreechimento);
+        usuario.setPathPdf(pathPdf);
+        appDataBase.usuarioDAO().insert(usuario);
     }
 
 }

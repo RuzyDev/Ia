@@ -24,6 +24,9 @@ public class Usuario implements Serializable {
     @ColumnInfo(name = "data_preenchimento")
     private Date dataPreenchimento;
 
+    @ColumnInfo(name = "path_pdf")
+    private String pathPdf;
+
     public Integer getId() {
         return id;
     }
@@ -56,13 +59,22 @@ public class Usuario implements Serializable {
         this.dataPreenchimento = dataPreenchimento;
     }
 
+    public String getPathPdf() {
+        return pathPdf;
+    }
+
+    public void setPathPdf(String pathPdf) {
+        this.pathPdf = pathPdf;
+    }
+
     @Override
     public String toString() {
         return "Usuario{" +
                 "id=" + id +
                 ", nome='" + nome + '\'' +
-                ", cpf='" + cpf + '\'' +
-                ", dataPreenchimento='" + dataPreenchimento + '\'' +
+                ", cpf=" + cpf +
+                ", dataPreenchimento=" + dataPreenchimento +
+                ", pathPdf='" + pathPdf + '\'' +
                 '}';
     }
 }
