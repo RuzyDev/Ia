@@ -1,9 +1,13 @@
 package br.com.arcom.signpad.api;
 
-import br.com.arcom.signpad.models.UsuarioRequest;
+import java.util.List;
+
+import br.com.arcom.signpad.data.LgpdVisitante;
+import br.com.arcom.signpad.models.LgpdVisitanteRequest;
 import okhttp3.MultipartBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
@@ -13,15 +17,24 @@ import retrofit2.http.Query;
 public interface SigaApi {
 
     @POST("api/seguranca/v2/login")
-    Call<String> buscarToken(@Body UsuarioRequest usuarioRequest);
+    Call<String> buscarToken(@Body LgpdVisitanteRequest lgpdVisitanteRequest);
 
     @Multipart
-    @POST("api/admin/v1/dados-lgpd-visitante")
-    Call<Void> salvarDados(
+    @POST("api/admin/v1/lgpd-visitante")
+    Call<Void> salvarDadosVisitante(
             @Header("Authorization") String token,
             @Query("nomeLgpdVisitante") String nome,
             @Query("cpfLgpdVisitante") Long cpf,
             @Query("dataPreenchimento") String dataPreen,
-            @Part MultipartBody.Part filePart);
+            @Part MultipartBody.Part filePart
+    );
+
+    @GET("/api/admin/v1/lgpd-visitante")
+    Call<List<LgpdVisitante>> buscarLpgdVisitante(
+            @Header("Authorization") String token,
+            @Query("modoPesquisa") String modoPesquisa,
+            @Query("nome") String nome,
+            @Query("cpf") Long cpf
+    );
 
 }

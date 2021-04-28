@@ -12,7 +12,7 @@ import br.com.arcom.signpad.utilities.Constantes;
 @Database(
         entities = {
                 SigaToken.class,
-                Usuario.class
+                LgpdVisitante.class
         }
         , version = 1)
 @TypeConverters({Converters.class})
@@ -33,6 +33,6 @@ public abstract class AppDataBase extends RoomDatabase {
 
     public abstract SigaTokenDAO sigaTokenDAO();
 
-    public abstract UsuarioDAO usuarioDAO();
+    public abstract LgpdVisitanteDAO lgpdVisitanteDAO();
 
 }

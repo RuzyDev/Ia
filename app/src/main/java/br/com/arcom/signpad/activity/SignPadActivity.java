@@ -3,9 +3,12 @@ package br.com.arcom.signpad.activity;
 import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
@@ -16,6 +19,7 @@ import java.util.List;
 
 import br.com.arcom.signpad.R;
 import br.com.arcom.signpad.data.AppDataBase;
+import br.com.arcom.signpad.utilities.CustomDialogAviso;
 
 public class SignPadActivity extends AppCompatActivity {
 
@@ -23,6 +27,7 @@ public class SignPadActivity extends AppCompatActivity {
     private static AppDataBase appDataBase;
 
     private static final int PERMISSIONS_REQUEST_CODE = 1240;
+    private static final int MENU_OPTIONS_BUSCAR_CADASTRADOS = 0;
 
     private final String[] appPermissions = {
             Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -77,4 +82,24 @@ public class SignPadActivity extends AppCompatActivity {
             );
         }
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        menu.add(0, MENU_OPTIONS_BUSCAR_CADASTRADOS, 0, "Buscar Cadastrados");
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case MENU_OPTIONS_BUSCAR_CADASTRADOS:
+                Intent intent = new Intent(SignPadActivity.this, BuscarCadastradosActivity.class);
+                startActivity(intent);
+                break;
+            default:
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 }

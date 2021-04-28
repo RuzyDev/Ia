@@ -2,7 +2,7 @@ package br.com.arcom.signpad.models;
 
 import com.google.gson.annotations.SerializedName;
 
-public class UsuarioRequest {
+public class LgpdVisitanteRequest {
 
     @SerializedName("idUsuario")
     private Long idUsuario;
@@ -13,7 +13,7 @@ public class UsuarioRequest {
     @SerializedName("apenasToken")
     private Boolean apenasToken;
 
-    public UsuarioRequest(Long idUsuario, String senha, Boolean apenasToken) {
+    public LgpdVisitanteRequest(Long idUsuario, String senha, Boolean apenasToken) {
         this.idUsuario = idUsuario;
         this.senha = senha;
         this.apenasToken = apenasToken;

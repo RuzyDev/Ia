@@ -30,7 +30,7 @@ public class SigaService {
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         OkHttpClient httpClient = new OkHttpClient.Builder().addInterceptor(interceptor).build();
-        Gson gson = (new GsonBuilder().setLenient()).setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ").create();
+        Gson gson = (new GsonBuilder().setLenient()).setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create();
 
         return (new retrofit2.Retrofit.Builder())
                 .baseUrl(this.baseUrl)

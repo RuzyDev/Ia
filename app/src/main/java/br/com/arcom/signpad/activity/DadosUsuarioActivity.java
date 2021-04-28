@@ -157,7 +157,7 @@ public class DadosUsuarioActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        UtilFile.deleteFile(pathToUserPhotoTemp);
+        if (pathToUserPhotoTemp != null) UtilFile.deleteFile(pathToUserPhotoTemp);
     }
 
     public void defaultUsuarioImagem() {

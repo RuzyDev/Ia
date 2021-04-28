@@ -7,7 +7,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -27,8 +26,7 @@ import java.util.concurrent.Future;
 import br.com.arcom.signpad.R;
 import br.com.arcom.signpad.models.PdfTermoCompromisso;
 import br.com.arcom.signpad.models.SigaResponse;
-import br.com.arcom.signpad.services.UsuarioService;
-import br.com.arcom.signpad.utilities.Constantes;
+import br.com.arcom.signpad.services.LgpdVisitanteService;
 import br.com.arcom.signpad.utilities.CustomDialogAviso;
 import br.com.arcom.signpad.utilities.IntentParameter;
 import br.com.arcom.signpad.utilities.UtilFile;
@@ -153,7 +151,7 @@ public class AssinaturaUsuarioActivity extends AppCompatActivity {
         Date dataPreen = new Date();
         String pathPdf = gerarPdf(dataPreen);
         deletarDadosUsuario();
-        return UsuarioService.salvarUsuario(AssinaturaUsuarioActivity.this, pathPdf, mUsuarioNomeCom, mUsuarioCpf, dataPreen);
+        return LgpdVisitanteService.salvarUsuario(AssinaturaUsuarioActivity.this, pathPdf, mUsuarioNomeCom, mUsuarioCpf, dataPreen);
     }
 
     public String formatarCpf(String cpf) {
