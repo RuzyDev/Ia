@@ -1,7 +1,5 @@
 package br.com.arcom.signpad.api;
 
-import android.util.Log;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
@@ -14,9 +12,8 @@ import java.util.concurrent.Future;
 
 import br.com.arcom.signpad.data.LgpdVisitante;
 import br.com.arcom.signpad.models.BuscarLgpdVisitanteResponse;
-import br.com.arcom.signpad.models.SigaResponse;
 import br.com.arcom.signpad.models.LgpdVisitanteRequest;
-import br.com.arcom.signpad.utilities.Constantes;
+import br.com.arcom.signpad.models.SigaResponse;
 import br.com.arcom.signpad.utilities.UtilDate;
 import br.com.arcom.signpad.utilities.UtilMobile;
 import okhttp3.MediaType;
