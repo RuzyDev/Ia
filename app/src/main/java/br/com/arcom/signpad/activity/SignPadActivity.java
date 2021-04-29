@@ -20,6 +20,7 @@ import java.util.List;
 import br.com.arcom.signpad.R;
 import br.com.arcom.signpad.data.AppDataBase;
 import br.com.arcom.signpad.utilities.CustomDialogAviso;
+import br.com.arcom.signpad.utilities.CustomDialogSenha;
 
 public class SignPadActivity extends AppCompatActivity {
 
@@ -93,8 +94,7 @@ public class SignPadActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case MENU_OPTIONS_BUSCAR_CADASTRADOS:
-                Intent intent = new Intent(SignPadActivity.this, BuscarCadastradosActivity.class);
-                startActivity(intent);
+                CustomDialogSenha.showDialog(SignPadActivity.this, "Arcomlgpd2021");
                 break;
             default:
                 break;
