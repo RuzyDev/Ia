@@ -85,7 +85,11 @@ public class BuscarCadastradosActivity extends AppCompatActivity {
             LgpdVisitanteAdapter adapter = new LgpdVisitanteAdapter(lgpdVisitanteList);
             rvLgpdVisitantes.setAdapter(adapter);
         } else {
-            CustomDialogAviso.showDialog(BuscarCadastradosActivity.this, response.getMsg());
+            if (modoPesquisa.equals("cpf")) {
+                CustomDialogAviso.showDialog(BuscarCadastradosActivity.this, "Nenhum cadastro encontrado com o CPF '" + textSearch + "'!!");
+            } else {
+                CustomDialogAviso.showDialog(BuscarCadastradosActivity.this, response.getMsg());
+            }
             LgpdVisitanteAdapter adapter = new LgpdVisitanteAdapter(Collections.emptyList());
             rvLgpdVisitantes.setAdapter(adapter);
         }
