@@ -31,6 +31,7 @@ import br.com.arcom.signpad.utilities.CustomDialogAviso;
 import br.com.arcom.signpad.utilities.IntentParameter;
 import br.com.arcom.signpad.utilities.UtilFile;
 import br.com.arcom.signpad.utilities.UtilImage;
+import br.com.arcom.signpad.utilities.UtilString;
 
 public class AssinaturaUsuarioActivity extends AppCompatActivity {
 
@@ -89,7 +90,7 @@ public class AssinaturaUsuarioActivity extends AppCompatActivity {
     public String gerarPdf(Date dataPreechimento) {
         // Salva imagem da assinatura
 
-        String cpfVisitante = formatarCpf(mUsuarioCpf.toString());
+        String cpfVisitante = UtilString.formatarCpf(mUsuarioCpf.toString());
         String imagemName = mUsuarioNomeCom.trim() + "-" + cpfVisitante + "-ASSINATURAUSUARIO";
         Bitmap bitmap = mAssinaturaUsuario.getSignatureBitmap();
         pathUsuarioAss = UtilImage.saveImage(bitmap, imagemName, AssinaturaUsuarioActivity.this);
@@ -152,10 +153,6 @@ public class AssinaturaUsuarioActivity extends AppCompatActivity {
         String pathPdf = gerarPdf(dataPreen);
         deletarDadosUsuario();
         return LgpdVisitanteService.salvarUsuario(AssinaturaUsuarioActivity.this, pathPdf, mUsuarioNomeCom, mUsuarioCpf, dataPreen);
-    }
-
-    public String formatarCpf(String cpf) {
-        return cpf.substring(0, 3) + "." + cpf.substring(3, 6) + "." + cpf.substring(6, 9) + "-" + cpf.substring(9, 11);
     }
 
     private void deletarDadosUsuario() {

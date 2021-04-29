@@ -88,13 +88,16 @@ public class SigaRepository {
     public BuscarLgpdVisitanteResponse buscarLpgdVisitante(String sigaToken, String modoPesquisa, String nome, Long cpf) {
         ExecutorService executor = Executors.newCachedThreadPool();
         Future<BuscarLgpdVisitanteResponse> futureTask = executor.submit(() -> {
-            try {
-                Response<List<LgpdVisitante>> response = sigaApi.buscarLpgdVisitante(("Bearer " + sigaToken), modoPesquisa, nome, cpf).execute();
+            if (modoPesquisa.equals("nome")) {
+                Response<List<LgpdVisitante>> response = sigaApi.buscarLpgdVisitante(("Bearer " + sigaToken), modoPesquisa, nome).execute();
                 return (response.isSuccessful())
-                    ? new BuscarLgpdVisitanteResponse(false, "", response.body())
-                    : new BuscarLgpdVisitanteResponse(true, response.message(), Collections.emptyList());
-            } catch (IOException e) {
-                return new BuscarLgpdVisitanteResponse(true, e.getMessage(), Collections.emptyList());
+                        ? new BuscarLgpdVisitanteResponse(false, "", response.body())
+                        : new BuscarLgpdVisitanteResponse(true, response.errorBody().string(), Collections.emptyList());
+            } else {
+                Response<LgpdVisitante> response = sigaApi.buscarLpgdVisitante(("Bearer " + sigaToken), modoPesquisa, cpf).execute();
+                return (response.isSuccessful())
+                        ? new BuscarLgpdVisitanteResponse(false, "", response.body())
+                        : new BuscarLgpdVisitanteResponse(true, response.errorBody().string(), Collections.emptyList());
             }
         });
         executor.shutdown();

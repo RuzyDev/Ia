@@ -9,11 +9,18 @@ public class BuscarLgpdVisitanteResponse {
     private final Boolean erro;
     private final String msg;
     private List<LgpdVisitante> lgpdVisitanteList;
+    private LgpdVisitante lgpdVisitante;
 
     public BuscarLgpdVisitanteResponse(Boolean erro, String msg, List<LgpdVisitante> lgpdVisitanteList) {
         this.erro = erro;
         this.msg = msg;
         this.lgpdVisitanteList = lgpdVisitanteList;
+    }
+
+    public BuscarLgpdVisitanteResponse(Boolean erro, String msg, LgpdVisitante lgpdVisitante) {
+        this.erro = erro;
+        this.msg = msg;
+        this.lgpdVisitante = lgpdVisitante;
     }
 
     public Boolean getErro() {
@@ -28,7 +35,16 @@ public class BuscarLgpdVisitanteResponse {
         return lgpdVisitanteList;
     }
 
+    public LgpdVisitante getLgpdVisitante() {
+        return lgpdVisitante;
+    }
+
+    public void setLgpdVisitante(LgpdVisitante lgpdVisitante) {
+        this.lgpdVisitante = lgpdVisitante;
+    }
+
     public void setLgpdVisitanteList(List<LgpdVisitante> lgpdVisitanteList) {
         this.lgpdVisitanteList = lgpdVisitanteList;
     }
+
 }

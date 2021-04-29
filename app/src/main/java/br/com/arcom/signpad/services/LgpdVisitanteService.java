@@ -107,8 +107,7 @@ public class LgpdVisitanteService {
 
     public static BuscarLgpdVisitanteResponse buscarLpgdVisitante(Context context, String modoPesquisa, String nome, Long cpf) {
         SigaResponse sigaResponse = getSigaToken(context);
-        if (!sigaResponse.getErro())
-            return SigaRepository.getInstance().buscarLpgdVisitante(sigaResponse.getMsg(), modoPesquisa, nome, cpf);
+        if (!sigaResponse.getErro()) return SigaRepository.getInstance().buscarLpgdVisitante(sigaResponse.getMsg(), modoPesquisa, nome, cpf);
         return new BuscarLgpdVisitanteResponse(true, sigaResponse.getMsg(), Collections.emptyList());
     }
 

@@ -33,7 +33,13 @@ public interface SigaApi {
     Call<List<LgpdVisitante>> buscarLpgdVisitante(
             @Header("Authorization") String token,
             @Query("modoPesquisa") String modoPesquisa,
-            @Query("nome") String nome,
+            @Query("nome") String nome
+    );
+
+    @GET("/api/admin/v1/lgpd-visitante")
+    Call<LgpdVisitante> buscarLpgdVisitante(
+            @Header("Authorization") String token,
+            @Query("modoPesquisa") String modoPesquisa,
             @Query("cpf") Long cpf
     );
 

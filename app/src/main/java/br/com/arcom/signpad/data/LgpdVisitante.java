@@ -31,6 +31,15 @@ public class LgpdVisitante implements Serializable {
     @ColumnInfo(name = "path_pdf")
     private String pathPdf;
 
+    public LgpdVisitante() {}
+
+    public LgpdVisitante(Long cpf, String nome, Date dataPreenchimento, String pathPdf) {
+        this.cpf = cpf;
+        this.nome = nome;
+        this.dataPreenchimento = dataPreenchimento;
+        this.pathPdf = pathPdf;
+    }
+
     public String getNome() {
         return nome;
     }
