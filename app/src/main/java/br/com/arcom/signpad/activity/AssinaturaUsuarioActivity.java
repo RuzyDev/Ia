@@ -28,7 +28,7 @@ import br.com.arcom.signpad.models.PdfTermoCompromisso;
 import br.com.arcom.signpad.models.SigaResponse;
 import br.com.arcom.signpad.services.LgpdVisitanteService;
 import br.com.arcom.signpad.utilities.CustomDialogAviso;
-import br.com.arcom.signpad.utilities.IntentParameter;
+import br.com.arcom.signpad.utilities.IntentParameters;
 import br.com.arcom.signpad.utilities.UtilFile;
 import br.com.arcom.signpad.utilities.UtilImage;
 import br.com.arcom.signpad.utilities.UtilString;
@@ -42,6 +42,7 @@ public class AssinaturaUsuarioActivity extends AppCompatActivity {
     private String pathUsuarioAss;
     private String titlePdf;
     private String usuarioFotoName;
+    private String pathPdf;
 
     private SignatureView mAssinaturaUsuario;
     private LinearLayout mAssConteudo;
@@ -59,18 +60,19 @@ public class AssinaturaUsuarioActivity extends AppCompatActivity {
         mAssConteudo = findViewById(R.id.view_ass_conteudo);
         mAssLoading = findViewById(R.id.view_ass_progressBar);
 
-        mUsuarioNomeCom = getIntent().getExtras().getString(IntentParameter.USUARIO_NOME_COMPLETO);
-        mUsuarioCpf = getIntent().getExtras().getLong(IntentParameter.USUARIO_CPF);
-        usuarioFotoName = getIntent().getExtras().getString(IntentParameter.USUARIO_FOTO_NAME);
-        pathUsuarioFotoTemp = getIntent().getExtras().getString(IntentParameter.USUARIO_FOTO_PATH_TEMP);
+        mUsuarioNomeCom = getIntent().getExtras().getString(IntentParameters.USUARIO_NOME_COMPLETO);
+        mUsuarioCpf = getIntent().getExtras().getLong(IntentParameters.USUARIO_CPF);
+        usuarioFotoName = getIntent().getExtras().getString(IntentParameters.USUARIO_FOTO_NAME);
+        pathUsuarioFotoTemp = getIntent().getExtras().getString(IntentParameters.USUARIO_FOTO_PATH_TEMP);
     }
 
     public void toActivtyAnterior(View view) {
         onBackPressed();
     }
 
-    public void toNextActivity() {
-        Intent intent = new Intent(AssinaturaUsuarioActivity.this, ConclusaoActivity.class);
+    public void toNextActivity(String pathPdf) {
+        Intent intent = new Intent(AssinaturaUsuarioActivity.this, PdfActivity.class);
+        intent.putExtra(IntentParameters.USUARIO_PDF_PATH, pathPdf);
         startActivity(intent);
         finish();
     }
@@ -135,7 +137,7 @@ public class AssinaturaUsuarioActivity extends AppCompatActivity {
                 if (!result.getErro()) {
 //                    CustomDialogAviso.showDialog(AssinaturaUsuarioActivity.this, result.getMsg());
 //                    Log.d(Constantes.TAG_LOG_SIGNPAD, result.getMsg());
-                    toNextActivity();
+                    toNextActivity(pathPdf);
                 } else {
                     CustomDialogAviso.showDialog(AssinaturaUsuarioActivity.this, result.getMsg());
                 }
@@ -150,7 +152,7 @@ public class AssinaturaUsuarioActivity extends AppCompatActivity {
 
     private SigaResponse salvarDados() {
         Date dataPreen = new Date();
-        String pathPdf = gerarPdf(dataPreen);
+        pathPdf = gerarPdf(dataPreen);
         deletarDadosUsuario();
         return LgpdVisitanteService.salvarUsuario(AssinaturaUsuarioActivity.this, pathPdf, mUsuarioNomeCom, mUsuarioCpf, dataPreen);
     }

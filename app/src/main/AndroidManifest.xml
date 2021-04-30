@@ -50,10 +50,9 @@
             android:name=".activity.AssinaturaUsuarioActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.ConclusaoActivity"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".activity.BuscarCadastradosActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".activity.PdfActivity"
             android:screenOrientation="portrait" />
     </application>
 

@@ -28,8 +28,6 @@ public class LgpdVisitanteService {
                 for (LgpdVisitante lgpdVisitante : lgpdVisitantes) {
                     SigaResponse response = salvarDados(sigaResponse.getMsg(), lgpdVisitante.getPathPdf(), lgpdVisitante.getNome(), lgpdVisitante.getCpf(), lgpdVisitante.getDataPreenchimento());
                     if (!response.getErro()) {
-                        File file = new File(lgpdVisitante.getPathPdf());
-                        file.delete();
                         appDataBase.lgpdVisitanteDAO().delete(lgpdVisitante);
                     } else {
                         salvarDadosLocalmente(mUsuarioNomeCom, mUsuarioCpf, dataPreechimento, pathPdf);
@@ -39,12 +37,7 @@ public class LgpdVisitanteService {
             }
 
             SigaResponse response = salvarDados(sigaResponse.getMsg(), pathPdf, mUsuarioNomeCom, mUsuarioCpf, dataPreechimento);
-            if (response.getErro()) {
-                salvarDadosLocalmente(mUsuarioNomeCom, mUsuarioCpf, dataPreechimento, pathPdf);
-            } else {
-                File file = new File(pathPdf);
-                file.delete();
-            }
+            if (response.getErro()) salvarDadosLocalmente(mUsuarioNomeCom, mUsuarioCpf, dataPreechimento, pathPdf);
             return new SigaResponse(false, response.getMsg());
         }
 
