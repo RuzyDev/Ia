@@ -25,7 +25,7 @@ public interface SigaApi {
             @Header("Authorization") String token,
             @Query("nomeLgpdVisitante") String nome,
             @Query("cpfLgpdVisitante") Long cpf,
-            @Query("dataPreenchimento") String dataPreen,
+            @Query("dataPreenchimento") String dataAss,
             @Part MultipartBody.Part filePart
     );
 

@@ -24,8 +24,8 @@ public class LgpdVisitante implements Serializable {
     private String nome;
 
     @SerializedName("dataAssinatura")
-    @ColumnInfo(name = "data_preenchimento")
-    private Date dataPreenchimento;
+    @ColumnInfo(name = "data_ass")
+    private Date dataAss;
 
     @SerializedName("arquivoLgpdVisitante")
     @ColumnInfo(name = "path_pdf")
@@ -33,10 +33,10 @@ public class LgpdVisitante implements Serializable {
 
     public LgpdVisitante() {}
 
-    public LgpdVisitante(Long cpf, String nome, Date dataPreenchimento, String pathPdf) {
+    public LgpdVisitante(Long cpf, String nome, Date dataAss, String pathPdf) {
         this.cpf = cpf;
         this.nome = nome;
-        this.dataPreenchimento = dataPreenchimento;
+        this.dataAss = dataAss;
         this.pathPdf = pathPdf;
     }
 
@@ -56,12 +56,12 @@ public class LgpdVisitante implements Serializable {
         this.cpf = cpf;
     }
 
-    public Date getDataPreenchimento() {
-        return dataPreenchimento;
+    public Date getDataAss() {
+        return dataAss;
     }
 
-    public void setDataPreenchimento(Date dataPreenchimento) {
-        this.dataPreenchimento = dataPreenchimento;
+    public void setDataAss(Date dataAss) {
+        this.dataAss = dataAss;
     }
 
     public String getPathPdf() {
@@ -77,7 +77,7 @@ public class LgpdVisitante implements Serializable {
         return "LgpdVisitante{" +
                 "cpf=" + cpf +
                 ", nome='" + nome + '\'' +
-                ", dataPreenchimento=" + dataPreenchimento +
+                ", dataAss=" + dataAss +
                 ", pathPdf='" + pathPdf + '\'' +
                 '}';
     }

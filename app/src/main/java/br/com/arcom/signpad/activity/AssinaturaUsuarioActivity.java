@@ -89,7 +89,7 @@ public class AssinaturaUsuarioActivity extends AppCompatActivity {
         mAssinaturaUsuario.clearCanvas();
     }
 
-    public String gerarPdf(Date dataPreechimento) {
+    public String gerarPdf(Date dataAss) {
         // Salva imagem da assinatura
 
         String cpfVisitante = UtilString.formatarCpf(mUsuarioCpf.toString());
@@ -109,7 +109,7 @@ public class AssinaturaUsuarioActivity extends AppCompatActivity {
 
         // Criar Pdf
         titlePdf = mUsuarioNomeCom.trim() + "-" + cpfVisitante;
-        return PdfTermoCompromisso.criarPdf(AssinaturaUsuarioActivity.this, mUsuarioNomeCom, cpfVisitante, pathUsuarioFoto, pathUsuarioAss, titlePdf, dataPreechimento);
+        return PdfTermoCompromisso.criarPdf(AssinaturaUsuarioActivity.this, mUsuarioNomeCom, cpfVisitante, pathUsuarioFoto, pathUsuarioAss, titlePdf, dataAss);
     }
 
     public void showLoading(Boolean value) {
@@ -151,10 +151,10 @@ public class AssinaturaUsuarioActivity extends AppCompatActivity {
     }
 
     private SigaResponse salvarDados() {
-        Date dataPreen = new Date();
-        pathPdf = gerarPdf(dataPreen);
+        Date dataAss = new Date();
+        pathPdf = gerarPdf(dataAss);
         deletarDadosUsuario();
-        return LgpdVisitanteService.salvarUsuario(AssinaturaUsuarioActivity.this, pathPdf, mUsuarioNomeCom, mUsuarioCpf, dataPreen);
+        return LgpdVisitanteService.salvarUsuario(AssinaturaUsuarioActivity.this, pathPdf, mUsuarioNomeCom, mUsuarioCpf, dataAss);
     }
 
     private void deletarDadosUsuario() {

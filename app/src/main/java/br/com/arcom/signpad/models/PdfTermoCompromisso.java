@@ -28,7 +28,7 @@ public class PdfTermoCompromisso {
     private final static Font conteudoFont = FontFactory.getFont(FontFactory.defaultEncoding, 12, Font.NORMAL, BaseColor.BLACK);
     private final static Font conteudoFontBold = FontFactory.getFont(FontFactory.defaultEncoding, 12, Font.BOLD, BaseColor.BLACK);
 
-    public static String criarPdf(Context context, String nome, String cpf, String pathUsuarioFoto, String pathUsuarioAss, String titlePdf, Date dataPreechimento) {
+    public static String criarPdf(Context context, String nome, String cpf, String pathUsuarioFoto, String pathUsuarioAss, String titlePdf, Date dataAss) {
         try {
             File pdfDirectory = new File(String.valueOf(ContextCompat.getExternalFilesDirs(context, null)[0]));
             if (!pdfDirectory.exists()) pdfDirectory.mkdirs();
@@ -41,7 +41,7 @@ public class PdfTermoCompromisso {
             adicionarTitulo(document);
             adicionarTextoInfo(document);
             adicionarDadosVisitante(document, nome, cpf, pathUsuarioFoto, pathUsuarioAss);
-            adicionarRodape(document, dataPreechimento);
+            adicionarRodape(document, dataAss);
             document.close();
             fo.close();
             return file.getAbsolutePath();
@@ -137,8 +137,8 @@ public class PdfTermoCompromisso {
         adicionarLinhaVazia(document, 1);
     }
 
-    private static void adicionarRodape(Document document, Date dataPreechimento) throws DocumentException {
-        Paragraph p = new Paragraph("Uberlândia, " + UtilDate.buscarDataAtual(dataPreechimento, UtilDate.DATE_TIME), conteudoFontBold);
+    private static void adicionarRodape(Document document, Date dataAss) throws DocumentException {
+        Paragraph p = new Paragraph("Uberlândia, " + UtilDate.buscarDataAtual(dataAss, UtilDate.DATE_TIME), conteudoFontBold);
         p.setAlignment(Element.ALIGN_CENTER);
         document.add(p);
     }

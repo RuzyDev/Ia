@@ -19,29 +19,29 @@ public class LgpdVisitanteService {
 
     private static AppDataBase appDataBase;
 
-    public static SigaResponse salvarUsuario(Context context, String pathPdf, String mUsuarioNomeCom, Long mUsuarioCpf, Date dataPreechimento) {
+    public static SigaResponse salvarUsuario(Context context, String pathPdf, String mUsuarioNomeCom, Long mUsuarioCpf, Date dataAss) {
         SigaResponse sigaResponse = getSigaToken(context);
 
         if (!sigaResponse.getErro()) {
             List<LgpdVisitante> lgpdVisitantes = appDataBase.lgpdVisitanteDAO().getAll();
             if (lgpdVisitantes.size() > 0) {
                 for (LgpdVisitante lgpdVisitante : lgpdVisitantes) {
-                    SigaResponse response = salvarDados(sigaResponse.getMsg(), lgpdVisitante.getPathPdf(), lgpdVisitante.getNome(), lgpdVisitante.getCpf(), lgpdVisitante.getDataPreenchimento());
+                    SigaResponse response = salvarDados(sigaResponse.getMsg(), lgpdVisitante.getPathPdf(), lgpdVisitante.getNome(), lgpdVisitante.getCpf(), lgpdVisitante.getDataAss());
                     if (!response.getErro()) {
                         appDataBase.lgpdVisitanteDAO().delete(lgpdVisitante);
                     } else {
-                        salvarDadosLocalmente(mUsuarioNomeCom, mUsuarioCpf, dataPreechimento, pathPdf);
+                        salvarDadosLocalmente(mUsuarioNomeCom, mUsuarioCpf, dataAss, pathPdf);
                         return new SigaResponse(false, response.getMsg());
                     }
                 }
             }
 
-            SigaResponse response = salvarDados(sigaResponse.getMsg(), pathPdf, mUsuarioNomeCom, mUsuarioCpf, dataPreechimento);
-            if (response.getErro()) salvarDadosLocalmente(mUsuarioNomeCom, mUsuarioCpf, dataPreechimento, pathPdf);
+            SigaResponse response = salvarDados(sigaResponse.getMsg(), pathPdf, mUsuarioNomeCom, mUsuarioCpf, dataAss);
+            if (response.getErro()) salvarDadosLocalmente(mUsuarioNomeCom, mUsuarioCpf, dataAss, pathPdf);
             return new SigaResponse(false, response.getMsg());
         }
 
-        salvarDadosLocalmente(mUsuarioNomeCom, mUsuarioCpf, dataPreechimento, pathPdf);
+        salvarDadosLocalmente(mUsuarioNomeCom, mUsuarioCpf, dataAss, pathPdf);
         return new SigaResponse(false, sigaResponse.getMsg());
     }
 
@@ -78,13 +78,13 @@ public class LgpdVisitanteService {
         }
     }
 
-    private static SigaResponse salvarDados(String sigaToken, String pathPdf, String mUsuarioNomeCom, Long mUsuarioCpf, Date dataPreechimento) {
+    private static SigaResponse salvarDados(String sigaToken, String pathPdf, String mUsuarioNomeCom, Long mUsuarioCpf, Date dataAss) {
         SigaRepository sigaRepository = SigaRepository.getInstance();
-        SigaResponse sigaResponse = sigaRepository.salvarDadosVisitante(sigaToken, pathPdf, mUsuarioNomeCom, mUsuarioCpf, dataPreechimento);
+        SigaResponse sigaResponse = sigaRepository.salvarDadosVisitante(sigaToken, pathPdf, mUsuarioNomeCom, mUsuarioCpf, dataAss);
         return (!sigaResponse.getErro()) ? new SigaResponse(false, sigaResponse.getMsg()) : new SigaResponse(true, sigaResponse.getMsg());
     }
 
-    private static void salvarDadosLocalmente(String nome, Long cpf, Date dataPreechimento, String pathPdf) {
+    private static void salvarDadosLocalmente(String nome, Long cpf, Date dataAss, String pathPdf) {
         LgpdVisitante lgpdVisitante = appDataBase.lgpdVisitanteDAO().getById(cpf);
         if (lgpdVisitante != null) {
             new File(lgpdVisitante.getPathPdf()).delete();
@@ -93,7 +93,7 @@ public class LgpdVisitanteService {
             lgpdVisitante.setCpf(cpf);
         }
         lgpdVisitante.setNome(nome);
-        lgpdVisitante.setDataPreenchimento(dataPreechimento);
+        lgpdVisitante.setDataAss(dataAss);
         lgpdVisitante.setPathPdf(pathPdf);
         appDataBase.lgpdVisitanteDAO().insert(lgpdVisitante);
     }

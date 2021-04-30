@@ -17,11 +17,6 @@ public class Converters {
     }
 
     @TypeConverter
-    public static LocalDateTime toDate(String dateString) {
-        return (dateString == null) ? null : LocalDateTime.parse(dateString);
-    }
-
-    @TypeConverter
     public static String toDateString(LocalDateTime date) {
         return (date == null) ? null : date.toString();
     }

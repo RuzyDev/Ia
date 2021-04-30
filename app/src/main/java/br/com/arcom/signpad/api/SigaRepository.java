@@ -54,7 +54,7 @@ public class SigaRepository {
         }
     }
 
-    public SigaResponse salvarDadosVisitante(String sigaToken, String pathPdf, String mUsuarioNomeCom, Long mUsuarioCpf, Date dataPreechimento) {
+    public SigaResponse salvarDadosVisitante(String sigaToken, String pathPdf, String mUsuarioNomeCom, Long mUsuarioCpf, Date dataAss) {
         File file = new File(pathPdf);
         MultipartBody.Part filePart = MultipartBody.Part.createFormData("arquivoLgpdVisitante",
                 file.getName(), RequestBody.create(file, MediaType.parse("application/pdf")));
@@ -66,7 +66,7 @@ public class SigaRepository {
                         ("Bearer " + sigaToken),
                         mUsuarioNomeCom,
                         mUsuarioCpf,
-                        UtilDate.buscarDataAtual(dataPreechimento, UtilDate.DATE_TIME_OP2),
+                        UtilDate.buscarDataAtual(dataAss, UtilDate.DATE_TIME_OP2),
                         filePart
                 ).execute();
                 return (response.isSuccessful())

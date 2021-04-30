@@ -34,6 +34,6 @@ public interface LgpdVisitanteDAO {
     @Delete
     void deleteAll(List<LgpdVisitante> lgpdVisitantes);
 
-    @Query("UPDATE lgpd_visitante SET nome = :nome, data_preenchimento = :dataPreenchimento, path_pdf = :pdfPath WHERE cpf = :cpf")
-    void update(Long cpf, String nome, LocalDateTime dataPreenchimento, String pdfPath);
+    @Query("UPDATE lgpd_visitante SET nome = :nome, data_ass = :dataAss, path_pdf = :pdfPath WHERE cpf = :cpf")
+    void update(Long cpf, String nome, LocalDateTime dataAss, String pdfPath);
 }

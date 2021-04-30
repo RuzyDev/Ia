@@ -24,13 +24,7 @@ public class PdfActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.pdf_activity);
         recuperarParametros();
-
-        File pdf = new File(pdfPath);
-        if (pdf.exists()) {
-            mPdfView.fromFile(pdf).load();
-        } else {
-            CustomDialogAviso.showDialog(PdfActivity.this, "pdf não existe");
-        }
+        mostrarPdf();
     }
 
     public void recuperarParametros() {
@@ -43,6 +37,15 @@ public class PdfActivity extends AppCompatActivity {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         finish();
+    }
+
+    private void mostrarPdf() {
+        File pdf = new File(pdfPath);
+        if (pdf.exists()) {
+            mPdfView.fromFile(pdf).load();
+        } else {
+            CustomDialogAviso.showDialog(PdfActivity.this, "Arquivo PDF não existe");
+        }
     }
 
 }
