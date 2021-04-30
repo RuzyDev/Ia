@@ -22,8 +22,8 @@ import com.google.android.material.textfield.TextInputLayout;
 import java.io.File;
 
 import br.com.arcom.signpad.R;
-import br.com.arcom.signpad.utilities.IntegerParameter;
-import br.com.arcom.signpad.utilities.IntentParameter;
+import br.com.arcom.signpad.utilities.IntegerParameters;
+import br.com.arcom.signpad.utilities.IntentParameters;
 import br.com.arcom.signpad.utilities.UtilFile;
 import br.com.arcom.signpad.utilities.UtilImage;
 import br.com.arcom.signpad.utilities.UtilValidate;
@@ -95,7 +95,7 @@ public class DadosUsuarioActivity extends AppCompatActivity {
     }
 
     public void toActivtyAnterior(View view) {
-        UtilFile.deleteFile(pathToUserPhotoTemp);
+        if (pathToUserPhotoTemp != null) UtilFile.deleteFile(pathToUserPhotoTemp);
         onBackPressed();
     }
 
@@ -106,10 +106,10 @@ public class DadosUsuarioActivity extends AppCompatActivity {
         String imagemName = nomeUsuario+"-"+cpfUsuario+"-FOTOUSUARIO";
 
         Intent intent = new Intent(DadosUsuarioActivity.this, AssinaturaUsuarioActivity.class);
-        intent.putExtra(IntentParameter.USUARIO_NOME_COMPLETO, nomeUsuario);
-        intent.putExtra(IntentParameter.USUARIO_CPF, cpfUsuario);
-        intent.putExtra(IntentParameter.USUARIO_FOTO_NAME, imagemName);
-        intent.putExtra(IntentParameter.USUARIO_FOTO_PATH_TEMP, pathToUserPhotoTemp);
+        intent.putExtra(IntentParameters.USUARIO_NOME_COMPLETO, nomeUsuario);
+        intent.putExtra(IntentParameters.USUARIO_CPF, cpfUsuario);
+        intent.putExtra(IntentParameters.USUARIO_FOTO_NAME, imagemName);
+        intent.putExtra(IntentParameters.USUARIO_FOTO_PATH_TEMP, pathToUserPhotoTemp);
         startActivity(intent);
     }
 
@@ -121,7 +121,7 @@ public class DadosUsuarioActivity extends AppCompatActivity {
                 pathToUserPhotoTemp = photoFile.getAbsolutePath();
                 photoUri = FileProvider.getUriForFile(DadosUsuarioActivity.this, "br.com.arcom.signpad.fileprovider", photoFile);
                 cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
-                startActivityForResult(cameraIntent, IntegerParameter.CAM_REQUEST);
+                startActivityForResult(cameraIntent, IntegerParameters.CAM_REQUEST);
             }
         }
     }
@@ -129,7 +129,7 @@ public class DadosUsuarioActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == IntegerParameter.CAM_REQUEST && resultCode == Activity.RESULT_OK) {
+        if (requestCode == IntegerParameters.CAM_REQUEST && resultCode == Activity.RESULT_OK) {
 
             if (UtilFile.countKBytes(pathToUserPhotoTemp) == 0) {
                 UtilFile.deleteFile(pathToUserPhotoTemp);
@@ -148,7 +148,7 @@ public class DadosUsuarioActivity extends AppCompatActivity {
             textFotoMsgErro.setVisibility(View.INVISIBLE);
         }
 
-        if (requestCode == IntegerParameter.CAM_REQUEST && resultCode == Activity.RESULT_CANCELED && data == null) {
+        if (requestCode == IntegerParameters.CAM_REQUEST && resultCode == Activity.RESULT_CANCELED && data == null) {
             UtilFile.deleteFile(pathToUserPhotoTemp);
             defaultUsuarioImagem();
         }

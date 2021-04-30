@@ -1,6 +1,6 @@
 package br.com.arcom.signpad.utilities;
 
-public class IntentParameter {
+public class IntentParameters {
 
     /**
      * Identifica o USUARIO NOME COMPLETO
@@ -21,5 +21,10 @@ public class IntentParameter {
      * Identifica o USUARIO FOTO NAME
      */
     public static final String USUARIO_FOTO_NAME = "usuarioFotoName";
+
+    /**
+     * Identifica o USUARIO FOTO PATH TEMP
+     */
+    public static final String USUARIO_PDF_PATH = "usuarioPdfPath";
 
 }
