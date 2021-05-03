@@ -21,11 +21,11 @@ public interface SigaApi {
 
     @Multipart
     @POST("api/admin/v1/lgpd-visitante")
-    Call<Void> salvarDadosVisitante(
+    Call<Void> salvarDadosLgpdVisitante(
             @Header("Authorization") String token,
-            @Query("nomeLgpdVisitante") String nome,
-            @Query("cpfLgpdVisitante") Long cpf,
-            @Query("dataPreenchimento") String dataAss,
+            @Query("nome") String nome,
+            @Query("cpf") Long cpf,
+            @Query("dataAss") String dataAss,
             @Part MultipartBody.Part filePart
     );
 

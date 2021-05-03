@@ -56,13 +56,13 @@ public class SigaRepository {
 
     public SigaResponse salvarDadosVisitante(String sigaToken, String pathPdf, String mUsuarioNomeCom, Long mUsuarioCpf, Date dataAss) {
         File file = new File(pathPdf);
-        MultipartBody.Part filePart = MultipartBody.Part.createFormData("arquivoLgpdVisitante",
+        MultipartBody.Part filePart = MultipartBody.Part.createFormData("arquivo",
                 file.getName(), RequestBody.create(file, MediaType.parse("application/pdf")));
 
         ExecutorService executor = Executors.newCachedThreadPool();
         Future<SigaResponse> futureTask = executor.submit(() -> {
             try {
-                Response<Void> response = sigaApi.salvarDadosVisitante(
+                Response<Void> response = sigaApi.salvarDadosLgpdVisitante(
                         ("Bearer " + sigaToken),
                         mUsuarioNomeCom,
                         mUsuarioCpf,

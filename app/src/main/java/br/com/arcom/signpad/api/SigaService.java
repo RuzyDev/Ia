@@ -3,6 +3,7 @@ package br.com.arcom.signpad.api;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import br.com.arcom.signpad.utilities.Constantes;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
@@ -11,7 +12,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class SigaService {
 
     // url do servidor
-    private final String baseUrl = "http://siga.arcom.com.br/";
+    private final String baseUrl = !Constantes.DEV ? "http://siga.arcom.com.br/" : "http://172.19.0.148:9000/";
     private final SigaApi api;
 
     public SigaService() {

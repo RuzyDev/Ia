@@ -9,12 +9,14 @@ import androidx.room.TypeConverters;
 
 import br.com.arcom.signpad.utilities.Constantes;
 
+import static br.com.arcom.signpad.utilities.Constantes.DATABASE_VERSION;
+
 @Database(
         entities = {
                 SigaToken.class,
                 LgpdVisitante.class
         }
-        , version = 1)
+        , version = DATABASE_VERSION)
 @TypeConverters({Converters.class})
 public abstract class AppDataBase extends RoomDatabase {
 
