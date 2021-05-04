@@ -57,6 +57,7 @@ public class LgpdVisitanteAdapter extends RecyclerView.Adapter<LgpdVisitanteAdap
         TextView dataAssTextView = holder.dataAssTextView;
 
         nomeTextView.setText(lgpdVisitante.getNome());
+//        cpfTextView.setText(String.valueOf(lgpdVisitante.getCpf()));
         cpfTextView.setText(UtilString.formatarCpf(String.valueOf(lgpdVisitante.getCpf())));
         dataAssTextView.setText(UtilDate.buscarDataAtual(lgpdVisitante.getDataAss(), DATE_TIME_OP3));
     }

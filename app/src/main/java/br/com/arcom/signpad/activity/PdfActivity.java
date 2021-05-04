@@ -27,6 +27,15 @@ public class PdfActivity extends AppCompatActivity {
         mostrarPdf();
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent = new Intent(getApplicationContext(), SignPadActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        finish();
+    }
+
     public void recuperarParametros() {
         mPdfView = findViewById(R.id.pdfView);
         pdfPath = getIntent().getExtras().getString(IntentParameters.USUARIO_PDF_PATH);

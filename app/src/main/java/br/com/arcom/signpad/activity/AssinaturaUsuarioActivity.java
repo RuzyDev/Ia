@@ -135,8 +135,6 @@ public class AssinaturaUsuarioActivity extends AppCompatActivity {
             try {
                 SigaResponse result = futureTask.get();
                 if (!result.getErro()) {
-//                    CustomDialogAviso.showDialog(AssinaturaUsuarioActivity.this, result.getMsg());
-//                    Log.d(Constantes.TAG_LOG_SIGNPAD, result.getMsg());
                     toNextActivity(pathPdf);
                 } else {
                     CustomDialogAviso.showDialog(AssinaturaUsuarioActivity.this, result.getMsg());

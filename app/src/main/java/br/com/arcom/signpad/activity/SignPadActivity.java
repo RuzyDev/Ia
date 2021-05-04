@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebView;
@@ -19,8 +20,6 @@ import java.util.List;
 
 import br.com.arcom.signpad.R;
 import br.com.arcom.signpad.data.AppDataBase;
-import br.com.arcom.signpad.utilities.CustomDialogAviso;
-import br.com.arcom.signpad.utilities.CustomDialogSenha;
 
 public class SignPadActivity extends AppCompatActivity {
 
@@ -86,18 +85,16 @@ public class SignPadActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        menu.add(0, MENU_OPTIONS_BUSCAR_CADASTRADOS, 0, "Buscar Cadastrados");
-        return super.onCreateOptionsMenu(menu);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_signpad_activity, menu);
+        return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case MENU_OPTIONS_BUSCAR_CADASTRADOS:
-                CustomDialogSenha.showDialog(SignPadActivity.this, "Arcomlgpd2021");
-                break;
-            default:
-                break;
+        if (item.getItemId() == R.id.buscar_cadastrados) {
+            Intent intent = new Intent(SignPadActivity.this, BuscarCadastradosActivity.class);
+            startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
     }

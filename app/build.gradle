@@ -55,4 +55,8 @@ dependencies {
     implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.12.0'
 
     implementation 'com.github.barteksc:android-pdf-viewer:2.8.2'
+
+    // https://mvnrepository.com/artifact/org.javatuples/javatuples
+    implementation group: 'org.javatuples', name: 'javatuples', version: '1.2'
+
 }
