@@ -14,7 +14,8 @@ import static br.com.arcom.signpad.utilities.Constantes.DATABASE_VERSION;
 @Database(
         entities = {
                 SigaToken.class,
-                LgpdVisitante.class
+                LgpdVisitante.class,
+                EmailLgpdVisitante.class
         }
         , version = DATABASE_VERSION)
 @TypeConverters({Converters.class})
@@ -36,5 +37,7 @@ public abstract class AppDataBase extends RoomDatabase {
     public abstract SigaTokenDAO sigaTokenDAO();
 
     public abstract LgpdVisitanteDAO lgpdVisitanteDAO();
+
+    public abstract EmailLgpdVisitanteDAO emailLgpdVisitanteDAO();
 
 }

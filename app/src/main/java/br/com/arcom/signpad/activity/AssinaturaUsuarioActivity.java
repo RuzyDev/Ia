@@ -70,9 +70,10 @@ public class AssinaturaUsuarioActivity extends AppCompatActivity {
         onBackPressed();
     }
 
-    public void toNextActivity(String pathPdf) {
+    public void toNextActivity(String pathPdf, Long cpf) {
         Intent intent = new Intent(AssinaturaUsuarioActivity.this, PdfActivity.class);
         intent.putExtra(IntentParameters.USUARIO_PDF_PATH, pathPdf);
+        intent.putExtra(IntentParameters.USUARIO_CPF, cpf);
         startActivity(intent);
         finish();
     }
@@ -135,7 +136,7 @@ public class AssinaturaUsuarioActivity extends AppCompatActivity {
             try {
                 SigaResponse result = futureTask.get();
                 if (!result.getErro()) {
-                    toNextActivity(pathPdf);
+                    toNextActivity(pathPdf, mUsuarioCpf);
                 } else {
                     CustomDialogAviso.showDialog(AssinaturaUsuarioActivity.this, result.getMsg());
                 }

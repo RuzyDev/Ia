@@ -43,4 +43,11 @@ public interface SigaApi {
             @Query("cpf") Long cpf
     );
 
+    @POST("/api/admin/v1/lgpd-visitante-enviar-email")
+    Call<Void> enviarPdfPorEmail(
+            @Header("Authorization") String token,
+            @Query("email") String email,
+            @Query("cpf") Long cpf
+    );
+
 }

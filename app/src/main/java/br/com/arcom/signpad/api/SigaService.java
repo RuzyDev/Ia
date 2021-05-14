@@ -12,7 +12,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class SigaService {
 
     // url do servidor
-    private final String baseUrl = !Constantes.DEV ? "http://siga.arcom.com.br/" : "http://172.19.0.148:9000/";
+    private final String baseUrl = !Constantes.DEV ? "http://192.10.10.60/" : "http://172.19.0.148:9000/";
     private final SigaApi api;
 
     public SigaService() {

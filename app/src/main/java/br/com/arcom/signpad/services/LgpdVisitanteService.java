@@ -9,6 +9,7 @@ import java.util.List;
 
 import br.com.arcom.signpad.api.SigaRepository;
 import br.com.arcom.signpad.data.AppDataBase;
+import br.com.arcom.signpad.data.EmailLgpdVisitante;
 import br.com.arcom.signpad.data.LgpdVisitante;
 import br.com.arcom.signpad.data.SigaToken;
 import br.com.arcom.signpad.models.BuscarLgpdVisitanteResponse;
@@ -31,6 +32,18 @@ public class LgpdVisitanteService {
                         appDataBase.lgpdVisitanteDAO().delete(lgpdVisitante);
                     } else {
                         salvarDadosLocalmente(mUsuarioNomeCom, mUsuarioCpf, dataAss, pathPdf);
+                        return new SigaResponse(false, response.getMsg());
+                    }
+                }
+            }
+
+            List<EmailLgpdVisitante> emailLgpdVisitantes = appDataBase.emailLgpdVisitanteDAO().getAll();
+            if (emailLgpdVisitantes.size() > 0) {
+                for (EmailLgpdVisitante emailLgpdVisitante : emailLgpdVisitantes) {
+                    SigaResponse response = enviarPdfPorEmail(context, emailLgpdVisitante.getEmail(), emailLgpdVisitante.getCpf());
+                    if (!response.getErro()) {
+                        appDataBase.emailLgpdVisitanteDAO().delete(emailLgpdVisitante);
+                    } else {
                         return new SigaResponse(false, response.getMsg());
                     }
                 }
@@ -102,6 +115,26 @@ public class LgpdVisitanteService {
         SigaResponse sigaResponse = getSigaToken(context);
         if (!sigaResponse.getErro()) return SigaRepository.getInstance().buscarLpgdVisitante(sigaResponse.getMsg(), modoPesquisa, nome, cpf);
         return new BuscarLgpdVisitanteResponse(true, sigaResponse.getMsg(), Collections.emptyList());
+    }
+
+    public static SigaResponse enviarPdfPorEmail(Context context, String email, Long cpf) {
+        SigaResponse sigaResponse = getSigaToken(context);
+        if (!sigaResponse.getErro()) {
+            SigaRepository sigaRepository = SigaRepository.getInstance();
+            SigaResponse response = sigaRepository.enviarPdfPorEmail(sigaResponse.getMsg(), email, cpf);
+            return (!response.getErro()) ? new SigaResponse(false, response.getMsg()) : new SigaResponse(true, response.getMsg());
+        }
+
+        salvarEmailLgpdVisitanteLocalmente(cpf, email);
+        return new SigaResponse(true, sigaResponse.getMsg());
+    }
+
+    private static void salvarEmailLgpdVisitanteLocalmente(Long cpf, String email) {
+        EmailLgpdVisitante emailLgpdVisitante = appDataBase.emailLgpdVisitanteDAO().getById(cpf);
+        if (emailLgpdVisitante == null) emailLgpdVisitante = new EmailLgpdVisitante();
+        emailLgpdVisitante.setCpf(cpf);
+        emailLgpdVisitante.setEmail(email);
+        appDataBase.emailLgpdVisitanteDAO().insert(emailLgpdVisitante);
     }
 
 }

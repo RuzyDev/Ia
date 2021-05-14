@@ -121,11 +121,13 @@
         android:id="@+id/view_ass_progressBar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:visibility="invisible">
 
         <ProgressBar
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
             android:theme="@style/ProgressBarColor"/>
 
     </LinearLayout>

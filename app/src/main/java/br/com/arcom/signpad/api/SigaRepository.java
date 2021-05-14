@@ -109,4 +109,25 @@ public class SigaRepository {
         }
     }
 
+    public SigaResponse enviarPdfPorEmail(String sigaToken, String email, Long cpf) {
+        ExecutorService executor = Executors.newCachedThreadPool();
+        Future<SigaResponse> futureTask = executor.submit(() -> {
+            try {
+                Response<Void> response = sigaApi.enviarPdfPorEmail(("Bearer " + sigaToken), email, cpf).execute();
+                return (response.isSuccessful())
+                        ? new SigaResponse(false, "Termo de consentimento enviado com sucesso!")
+                        : new SigaResponse(true, response.errorBody().string());
+            } catch (IOException e) {
+                return new SigaResponse(true, e.getMessage());
+            }
+        });
+        executor.shutdown();
+
+        try {
+            return futureTask.get();
+        } catch (ExecutionException | InterruptedException e) {
+            return new SigaResponse(true, e.getMessage());
+        }
+    }
+
 }
