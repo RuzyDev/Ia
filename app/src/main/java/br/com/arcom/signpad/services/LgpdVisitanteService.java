@@ -100,7 +100,7 @@ public class LgpdVisitanteService {
     private static void salvarDadosLocalmente(String nome, Long cpf, Date dataAss, String pathPdf) {
         LgpdVisitante lgpdVisitante = appDataBase.lgpdVisitanteDAO().getById(cpf);
         if (lgpdVisitante != null) {
-            new File(lgpdVisitante.getPathPdf()).delete();
+            if (!pathPdf.equals(lgpdVisitante.getPathPdf())) new File(lgpdVisitante.getPathPdf()).delete();
         } else {
             lgpdVisitante = new LgpdVisitante();
             lgpdVisitante.setCpf(cpf);

@@ -69,13 +69,11 @@ public class CustomDialogSendEmail {
 
             try {
                 SigaResponse result = futureTask.get();
-
                 if (result.getErro()) {
                     showLoading(false);
-                    CustomDialogAviso.showDialog(context, "Servidor fora do ar, o termo será enviado quando voltar!!");
+                    CustomDialogCheck.showDialog(context, "Servidor fora do ar, o envio será feito posteriormente!!");
                 } else {
                     showLoading(false);
-
                     CustomDialogCheck.showDialog(context, "Enviado com sucesso!!");
                 }
                 dialog.dismiss();
@@ -100,8 +98,13 @@ public class CustomDialogSendEmail {
         if (email.isEmpty()) {
             textInputEmail.setError("E-mail obrigátorio!!");
             return false;
+        } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            textInputEmail.setError("E-mail inválido!!");
+            return false;
+        } else {
+            textInputEmail.setError(null);
+            return true;
         }
-        return true;
     }
 
     public static void showLoading(Boolean value) {
