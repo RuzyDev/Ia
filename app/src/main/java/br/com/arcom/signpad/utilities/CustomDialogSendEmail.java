@@ -60,30 +60,40 @@ public class CustomDialogSendEmail {
     public static void sendEmail(Context context, String email, Long cpf) {
         if (!validarEmail(email)) return;
         showLoading(true);
-        ExecutorService executor = Executors.newSingleThreadExecutor();
         Handler handler = new Handler(Looper.getMainLooper());
-        executor.execute(() -> handler.post(() -> {
-            ExecutorService threadpool = Executors.newCachedThreadPool();
-            Future<SigaResponse> futureTask = threadpool.submit(() -> LgpdVisitanteService.enviarPdfPorEmail(context, email, cpf));
-            threadpool.shutdown();
-
-            try {
-                SigaResponse result = futureTask.get();
-                if (result.getErro()) {
+        ExecutorService threadpool = Executors.newSingleThreadExecutor();
+        Result result = new Result() {
+            @Override
+            public void onSuccess(SigaResponse result) {
+                handler.post(() -> {
                     showLoading(false);
-                    CustomDialogCheck.showDialog(context, "Servidor fora do ar, o envio será feito posteriormente!!");
-                } else {
-                    showLoading(false);
-                    CustomDialogCheck.showDialog(context, "Enviado com sucesso!!");
-                }
-                dialog.dismiss();
-            } catch (ExecutionException | InterruptedException e) {
-                CustomDialogAviso.showDialog(context, e.getMessage());
-            } finally {
-                showLoading(false);
+                    if (result.getErro()) {
+                        showLoading(false);
+                        CustomDialogCheck.showDialog(context, "Servidor fora do ar, o envio será feito posteriormente!!");
+                    } else {
+                        showLoading(false);
+                        CustomDialogCheck.showDialog(context, "Enviado com sucesso!!");
+                    }
+                });
             }
-        }));
-        executor.shutdown();
+
+            @Override
+            public void onError(Exception exception) {
+                handler.post(() -> {
+                    showLoading(false);
+                    CustomDialogAviso.showDialog(context, exception.getMessage());
+                });
+            }
+        };
+
+        threadpool.execute(() -> {
+            try {
+                result.onSuccess(LgpdVisitanteService.enviarPdfPorEmail(context, email, cpf));
+            } catch (Exception e) {
+                result.onError(e);
+            }
+        });
+
     }
 
     public static void recuperarParametros() {
@@ -115,6 +125,11 @@ public class CustomDialogSendEmail {
             mConteudo.setVisibility(View.VISIBLE);
             mLoading.setVisibility(View.GONE);
         }
+    }
+
+    interface Result{
+        void onSuccess(SigaResponse sigaResponse);
+        void onError(Exception exception);
     }
 
 }

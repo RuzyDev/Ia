@@ -126,30 +126,39 @@ public class AssinaturaUsuarioActivity extends AppCompatActivity {
     public void concluir(View view) {
         if (!validarAssinatura()) return;
         showLoading(true);
-        ExecutorService executor = Executors.newSingleThreadExecutor();
         Handler handler = new Handler(Looper.getMainLooper());
-        executor.execute(() -> handler.post(() -> {
-            ExecutorService threadpool = Executors.newCachedThreadPool();
-            Future<SigaResponse> futureTask = threadpool.submit(this::salvarDados);
-            threadpool.shutdown();
-
-            try {
-                SigaResponse result = futureTask.get();
-                if (!result.getErro()) {
-                    toNextActivity(pathPdf, mUsuarioCpf);
-                } else {
-                    CustomDialogAviso.showDialog(AssinaturaUsuarioActivity.this, result.getMsg());
-                }
-            } catch (ExecutionException | InterruptedException e) {
-                CustomDialogAviso.showDialog(AssinaturaUsuarioActivity.this, e.getMessage());
-            } finally {
-                showLoading(false);
+        ExecutorService threadpool = Executors.newSingleThreadExecutor();
+        Result result = new Result() {
+            @Override
+            public void onSuccess(SigaResponse result) {
+                handler.post(() -> {
+                    showLoading(false);
+                    if (!result.getErro()) {
+                        toNextActivity(pathPdf, mUsuarioCpf);
+                    } else {
+                        CustomDialogAviso.showDialog(AssinaturaUsuarioActivity.this, result.getMsg());
+                    }
+                });
             }
-        }));
-        executor.shutdown();
+
+            @Override
+            public void onError(Exception exception) {
+                handler.post(() -> {
+                    showLoading(false);
+                    CustomDialogAviso.showDialog(AssinaturaUsuarioActivity.this, exception.getMessage());
+                });
+            }
+        };
+        threadpool.execute(() -> {
+            try {
+                result.onSuccess(salvarDados());
+            } catch (Exception e) {
+                result.onError(e);
+            }
+        });
     }
 
-    private SigaResponse salvarDados() {
+    private SigaResponse salvarDados() throws Exception {
         Date dataAss = new Date();
         pathPdf = gerarPdf(dataAss);
         deletarDadosUsuario();
@@ -163,6 +172,11 @@ public class AssinaturaUsuarioActivity extends AppCompatActivity {
         file.delete();
         file = new File(pathUsuarioFotoTemp);
         file.delete();
+    }
+
+    interface Result{
+        void onSuccess(SigaResponse sigaResponse);
+        void onError(Exception exception);
     }
 
 }

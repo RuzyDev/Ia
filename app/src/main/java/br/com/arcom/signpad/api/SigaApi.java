@@ -19,14 +19,10 @@ public interface SigaApi {
     @POST("api/seguranca/v2/login")
     Call<String> buscarToken(@Body LgpdVisitanteRequest lgpdVisitanteRequest);
 
-    @Multipart
     @POST("api/admin/v1/lgpd-visitante")
     Call<Void> salvarDadosLgpdVisitante(
             @Header("Authorization") String token,
-            @Query("nome") String nome,
-            @Query("cpf") Long cpf,
-            @Query("dataAss") String dataAss,
-            @Part MultipartBody.Part filePart
+            @Body DadosLgpdVisitante dados
     );
 
     @GET("/api/admin/v1/lgpd-visitante")

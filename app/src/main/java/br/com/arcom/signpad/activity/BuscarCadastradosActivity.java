@@ -86,28 +86,38 @@ public class BuscarCadastradosActivity extends AppCompatActivity {
     public void buscarCadastrados(View view) {
         if (!validarTextSearch()) return;
         showLoading(true);
-        ExecutorService executor = Executors.newSingleThreadExecutor();
         Handler handler = new Handler(Looper.getMainLooper());
-        executor.execute(() -> handler.post(() -> {
-            ExecutorService threadpool = Executors.newCachedThreadPool();
-            Future<Triplet<BuscarLgpdVisitanteResponse, String, String>> futureTask = threadpool.submit(this::buscarVisitantesCadastrados);
-            threadpool.shutdown();
-
-            try {
-                Triplet<BuscarLgpdVisitanteResponse, String, String> result = futureTask.get();
-                vereficarResponse(result.getValue0(), result.getValue1(), result.getValue2());
-            } catch (ExecutionException | InterruptedException e) {
-                CustomDialogAviso.showDialog(BuscarCadastradosActivity.this, e.getMessage());
-            } finally {
-                showLoading(false);
+        ExecutorService threadpool = Executors.newSingleThreadExecutor();
+        Result result = new Result() {
+            @Override
+            public void onSuccess(Triplet<BuscarLgpdVisitanteResponse, String, String> lgpdVisitante) {
+                handler.post(() -> {
+                    showLoading(false);
+                    vereficarResponse(lgpdVisitante.getValue0(), lgpdVisitante.getValue1(), lgpdVisitante.getValue2());
+                });
             }
-        }));
-        executor.shutdown();
+
+            @Override
+            public void onError(Exception exception) {
+                handler.post(() -> {
+                    showLoading(false);
+                    CustomDialogAviso.showDialog(BuscarCadastradosActivity.this, exception.getMessage());
+                });
+            }
+        };
+        threadpool.execute(() -> {
+            try {
+                result.onSuccess(buscarVisitantesCadastrados());
+            } catch (Exception e) {
+                result.onError(e);
+            }
+        });
     }
 
-    public Triplet<BuscarLgpdVisitanteResponse, String, String> buscarVisitantesCadastrados() {
+    public Triplet<BuscarLgpdVisitanteResponse, String, String> buscarVisitantesCadastrados() throws Exception {
         String textSearch = tiSearch.getEditText().getText().toString().trim();
         String modoPesquisa;
+
         if (NumberUtils.isCreatable(textSearch)) {
             modoPesquisa = "cpf";
             return new Triplet<>(LgpdVisitanteService.buscarLpgdVisitante(BuscarCadastradosActivity.this, modoPesquisa, null, Long.valueOf(textSearch)),
@@ -145,6 +155,11 @@ public class BuscarCadastradosActivity extends AppCompatActivity {
             rvLgpdVisitantes.setAdapter(adapter);
         }
         rvLgpdVisitantes.setLayoutManager(new LinearLayoutManager(this));
+    }
+
+    interface Result{
+        void onSuccess(Triplet<BuscarLgpdVisitanteResponse, String, String> lgpdVisitante);
+        void onError(Exception exception);
     }
 
 }

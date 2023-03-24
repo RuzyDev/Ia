@@ -50,7 +50,7 @@ public class PdfActivity extends AppCompatActivity {
 
     public void toNextActivity(View view) {
         Intent intent = new Intent(getApplicationContext(), SignPadActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         finish();
     }
