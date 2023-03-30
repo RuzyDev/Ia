@@ -1,22 +1,21 @@
 <resources>
     <string name="app_name">SignPad</string>
-    <string name="texto_info_termo">
-    <![CDATA[
-        <html>
-            <head></head>
-            <body style="text-align:justify;color:gray;background-color:white;font-size:120%;">
-                Considerando o interesse expresso do signatário em adentrar nas dependências da empresa Arcom S/A, este termo tem por finalidade registrar a manifestação livre, informada e inequívoca pela qual o titular concorda com a utilização de seus dados pessoais abaixo identificados para finalidades específicas, nos moldes da Lei 13.709 de 14 de agosto de 2018 - Lei Geral de Proteção de Dados Pessoais (LGPD).
-                <br/>
-                <br/>
-                Com a assinatura, o titular autoriza a empresa Arcom S/A, inscrita no CNPJ sob o n° 25.769.266/0001-24 a registrar o acesso do signatário na portaria da empresa, em cumprimento às medidas de segurança interna adotadas pela sociedade empresária.
-                <br/>
-                <br/>
-                Estes dados não serão compartilhados com outras empresas, salvo por expressa determinação legal, permanecendo arquivados no banco de dados da Arcom S/A, seguindo todos os protocolos de segurança da informação necessários para  a garantia de não violação destes elementos.
-                <br/>
-                <br/>
-                Com isso, a identificação abaixo, por meio de foto e assinatura pessoal, expressa a irrestrita concordância com o acima exposto.
-            </body>
-        </html>
-    ]]>
-    </string>
+    <string name="login_title">Login</string>
+    <string name="termos">Considerando o interesse expresso do signatário em adentrar nas dependências da empresa Arcom S/A, este termo tem por finalidade registrar a manifestação livre, informada e inequívoca pela qual o titular concorda com a utilização de seus dados pessoais abaixo identificados para finalidades específicas, nos moldes da Lei 13.709 de 14 de agosto de 2018 - Lei Geral de Proteção de Dados Pessoais (LGPD).\n\nCom a assinatura, o titular autoriza a empresa Arcom S/A, inscrita no CNPJ sob o n° 25.769.266/0001-24 a registrar o acesso do signatário na portaria da empresa, em cumprimento às medidas de segurança interna adotadas pela sociedade empresária.\n\nEstes dados não serão compartilhados com outras empresas, salvo por expressa determinação legal, permanecendo arquivados no banco de dados da Arcom S/A, seguindo todos os protocolos de segurança da informação necessários para  a garantia de não violação destes elementos.\n\nCom isso, a identificação abaixo, por meio de foto e assinatura pessoal, expressa a irrestrita concordância com o acima exposto.</string>
+    <string name="concordar_e_prosseguir">Concordar e prosseguir</string>
+    <string name="nome">Nome</string>
+    <string name="cpf">Cpf</string>
+    <string name="confirmar">Confirmar</string>
+    <string name="voce_nao_possui_dados">Você não possui dados</string>
+    <string name="erro_ao_buscar_dados">Erro ao buscar dados</string>
+    <string name="pesquise">Pesquise</string>
+    <string name="realize_uma_pesquisa">Digite o visitante desejado e clique na 🔍︎ para realizar a pesquisa</string>
+    <string name="resultados_nao_encontrados">Resultados não encontrados</string>
+    <string name="assinatura">Assinatura:</string>
+    <string name="limpar_assinatura">Limpar assinatura</string>
+    <string name="compartilhar">Compartilhar</string>
+    <string name="email">E-Mail</string>
+    <string name="digite_email">Digite o e-mail que deseja compartilhar o pdf</string>
+    <string name="cancelar">Cancelar</string>
+    <string name="finalizar">Finalizar</string>
 </resources>
