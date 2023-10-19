@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="br.com.arcom.signpad">
+    package="br.com.reconhecimento">
 
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -22,7 +22,7 @@
     </queries>
 
     <application
-        android:name="br.com.arcom.signpad.MainApplication"
+        android:name="br.com.reconhecimento.MainApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -32,7 +32,7 @@
         android:theme="@style/Theme.Signpad">
 
         <activity
-            android:name="br.com.arcom.signpad.MainActivity"
+            android:name="br.com.reconhecimento.MainActivity"
             android:exported="true"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Signpad"
@@ -43,7 +43,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
-            <intent-filter android:label="signpad">
+            <intent-filter android:label="reconhecimento">
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -52,7 +52,7 @@
 
                 <data
                     android:host="details"
-                    android:scheme="signpad" />
+                    android:scheme="reconhecimento" />
             </intent-filter>
 
             <meta-data

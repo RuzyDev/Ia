@@ -51,7 +51,7 @@
 -dontwarn com.google.errorprone.annotations.*
 
 # Keep trakt-java and tmdb-java entity names (for GSON)
--keep class br.com.arcom.signpad.network.model.** {
+-keep class br.com.reconhecimento.network.model.** {
     <fields>;
     <init>(...);
 }
