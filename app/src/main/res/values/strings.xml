@@ -18,4 +18,6 @@
     <string name="digite_email">Digite o e-mail que deseja compartilhar o pdf</string>
     <string name="cancelar">Cancelar</string>
     <string name="finalizar">Finalizar</string>
+    <string name="ocorreu_um_erro">Ocorreu um erro</string>
+    <string name="dados_nao_encontrados">Dados não encontrados</string>
 </resources>

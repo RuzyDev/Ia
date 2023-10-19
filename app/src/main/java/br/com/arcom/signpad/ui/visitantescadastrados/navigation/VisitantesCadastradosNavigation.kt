@@ -17,11 +17,15 @@ fun NavController.navigateToVisitantesCadastrados() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 fun NavGraphBuilder.visitantesCadastrados(
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    navigateToVisitantePdf: (Long) -> Unit,
 ) {
     composable(
         route = VisitantesCadastradosNavigation.route
     ) {
-        VisitantesCadastradosRoute(onBackClick = onBackClick)
+        VisitantesCadastradosRoute(
+            onBackClick = onBackClick,
+            navigateToVisitantePdf = navigateToVisitantePdf,
+        )
     }
 }

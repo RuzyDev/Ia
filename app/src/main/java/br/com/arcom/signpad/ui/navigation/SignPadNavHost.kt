@@ -15,6 +15,8 @@ import br.com.arcom.signpad.ui.dadosvisitante.navigation.dadosVisitante
 import br.com.arcom.signpad.ui.dadosvisitante.navigation.navigateToDadosVisitante
 import br.com.arcom.signpad.ui.pdf.navigation.navigateToPdf
 import br.com.arcom.signpad.ui.pdf.navigation.pdf
+import br.com.arcom.signpad.ui.visitantepdf.navigation.navigateToVisitantePdf
+import br.com.arcom.signpad.ui.visitantepdf.navigation.visitantePdf
 import br.com.arcom.signpad.ui.visitantescadastrados.navigation.navigateToVisitantesCadastrados
 import br.com.arcom.signpad.ui.visitantescadastrados.navigation.visitantesCadastrados
 import br.com.arcom.signpad.ui.welcome.navigation.WelcomeNavigation
@@ -45,7 +47,8 @@ fun SignPadNavHost(
         )
         assinatura(onBackClick, navigateToPdf = navController::navigateToPdf)
         pdf(navigateToWelcome = { onBackClickWithDestination(WelcomeNavigation.route) })
-        visitantesCadastrados(onBackClick)
+        visitantesCadastrados(onBackClick,navigateToVisitantePdf = navController::navigateToVisitantePdf)
+        visitantePdf(onBackClick)
     }
 
 }

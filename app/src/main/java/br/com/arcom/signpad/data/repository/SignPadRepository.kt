@@ -47,7 +47,7 @@ class SignPadRepository @Inject constructor(
                     filePart = base64,
                 )
             )
-        }catch (e: Exception){
+        } catch (e: Exception) {
             lgpdVisitanteDao.insert(
                 LgpdVisitanteEntity(
                     id = 0,
@@ -59,6 +59,8 @@ class SignPadRepository @Inject constructor(
             )
         }
     }
+
+    suspend fun findVisitantePdf(cpf: Long) = signPadDataSource.findVisitantePdf(cpf)
 
     suspend fun findVisitantes(
         search: String

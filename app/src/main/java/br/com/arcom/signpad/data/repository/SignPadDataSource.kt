@@ -14,6 +14,10 @@ class SignPadDataSource @Inject constructor(
         signpadService.salvarDadosLgpdVisitante(dados).bodyOrThrow()
     }
 
+    suspend fun findVisitantePdf(cpf: Long) = withRetry {
+        signpadService.buscarPdf( cpf).bodyOrThrow()
+    }
+
     suspend fun findVisitantesCpf(cpf: Long) = withRetry {
         signpadService.buscarLpgdVisitante("cpf", cpf).bodyOrThrow()
     }

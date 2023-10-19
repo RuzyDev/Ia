@@ -25,15 +25,16 @@ fun NavController.navigateToAssinatura(args: AssinaturaArgs) {
 fun NavGraphBuilder.assinatura(
     onBackClick: () -> Unit,
     navigateToPdf: (String, Long) -> Unit,
-
-    ) {
+) {
     composable(
         route = "${AssinaturaNavigation.route}/{$assinaturaArgs}",
         arguments = listOf(
             navArgument(assinaturaArgs) { type = NavType.StringType }
         )
     ) {
-        AssinaturaRoute(onBackClick = onBackClick,
-        navigateToPdf = navigateToPdf)
+        AssinaturaRoute(
+            onBackClick = onBackClick,
+            navigateToPdf = navigateToPdf
+        )
     }
 }

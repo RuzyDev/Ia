@@ -6,8 +6,11 @@ import androidx.lifecycle.viewModelScope
 import br.com.arcom.repplus.ui.commons.UiMessage
 import br.com.arcom.repplus.ui.commons.UiMessageManager
 import br.com.arcom.signpad.data.domain.FindVisitantes
+import br.com.arcom.signpad.data.domain.SendEmail
 import br.com.arcom.signpad.data.model.LgpdVisitante
 import br.com.arcom.signpad.ui.commons.ObservableLoadingCounter
+import br.com.arcom.signpad.ui.commons.collectStatus
+import br.com.arcom.signpad.util.Logger
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -16,7 +19,8 @@ import javax.inject.Inject
 @HiltViewModel
 class VisitantesCadastradosViewModel @Inject internal constructor(
     savedStateHandle: SavedStateHandle,
-    private val findVisitantes: FindVisitantes
+    private val findVisitantes: FindVisitantes,
+    private val logger: Logger
 ) : ViewModel() {
 
     private val loading = ObservableLoadingCounter()
@@ -42,6 +46,7 @@ class VisitantesCadastradosViewModel @Inject internal constructor(
             _search.emit(value)
         }
     }
+
 
     fun findVisitantes(value: String) {
         viewModelScope.launch {

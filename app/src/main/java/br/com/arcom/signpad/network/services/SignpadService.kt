@@ -26,6 +26,11 @@ interface SignpadService {
         @Query("cpf") cpf: Long?
     ): Response<NetworkLgpdVisitante?>
 
+    @GET("/api/admin/v1/lgpd-visitante-buscar-pdf")
+    suspend fun buscarPdf(
+        @Query("cpf") cpf: Long?
+    ): Response<String>
+
     @POST("/api/admin/v1/lgpd-visitante-enviar-email")
     suspend fun enviarPdfPorEmail(
         @Query("email") email: String?,

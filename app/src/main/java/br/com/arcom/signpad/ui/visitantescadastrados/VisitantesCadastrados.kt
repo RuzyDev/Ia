@@ -16,6 +16,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -47,6 +48,7 @@ import java.io.File
 @Composable
 fun VisitantesCadastradosRoute(
     onBackClick: () -> Unit,
+    navigateToVisitantePdf: (Long) -> Unit,
     viewModel: VisitantesCadastradosViewModel = hiltViewModel()
 ) {
     val observables = viewModel.visitantesCadastradosUiState.collectAsStateWithLifecycle()
@@ -56,6 +58,7 @@ fun VisitantesCadastradosRoute(
         observables = observables.value,
         search = viewModel::search,
         clearMessages = viewModel::clearMessages,
+        navigateToVisitantePdf = navigateToVisitantePdf,
     )
 }
 
@@ -67,7 +70,8 @@ fun VisitantesCadastradosScreen(
     onBackClick: () -> Unit,
     observables: VisitantesCadastradosUiState,
     search: (String) -> Unit,
-    clearMessages: () -> Unit
+    clearMessages: () -> Unit,
+    navigateToVisitantePdf: (Long) -> Unit
 ) {
 
     BackHandler() {
@@ -160,12 +164,13 @@ fun VisitantesCadastradosScreen(
             ) {
                 if (observables.visitantes.isNotEmpty()) {
                     items(observables.visitantes) { visitante ->
-                        CardVisitante(modifier = Modifier.fillMaxWidth(0.9f), visitante)
+                        CardVisitante(modifier = Modifier.fillMaxWidth(0.9f), visitante) {
+                            navigateToVisitantePdf(visitante.id)
+                        }
                     }
                 } else {
 
                     item {
-
                         Surface(
                             modifier = Modifier.fillMaxWidth(0.9f),
                             shape = RoundedCornerShape(12.dp),
@@ -195,11 +200,12 @@ fun VisitantesCadastradosScreen(
 }
 
 @Composable
-fun CardVisitante(modifier: Modifier = Modifier, visitante: LgpdVisitante) {
+fun CardVisitante(modifier: Modifier = Modifier, visitante: LgpdVisitante, onClick: () -> Unit) {
     Surface(
         modifier = modifier,
         shape = RoundedCornerShape(12.dp),
-        color = MaterialTheme.colorScheme.secondary
+        color = MaterialTheme.colorScheme.secondary,
+        onClick = onClick
     ) {
         Column(
             Modifier

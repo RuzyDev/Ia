@@ -7,8 +7,11 @@ import android.graphics.pdf.PdfRenderer
 import android.net.Uri
 import android.os.Environment
 import android.os.ParcelFileDescriptor
+import android.util.Base64
 import androidx.core.content.FileProvider.getUriForFile
 import br.com.arcom.signpad.BuildConfig
+import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
 import java.time.LocalDateTime
@@ -86,5 +89,23 @@ fun convertPdf(file: File): Bitmap? {
     page.close()
     renderer.close()
 
+    return bitmap
+}
+
+fun Context.base64ToBitmap(base64String: String?): Bitmap? {
+    val filePath = this.filesDir
+    val fileName = "visitante.pdf"
+    val file = File(filePath, fileName)
+    val bitmap = try {
+        val decodedBytes = Base64.decode(base64String, Base64.DEFAULT)
+        val fileOutputStream = FileOutputStream(file)
+        fileOutputStream.write(decodedBytes)
+        fileOutputStream.close()
+        convertPdf(file)
+    } catch (e: Exception) {
+        e.printStackTrace()
+        null
+    }
+    file.delete()
     return bitmap
 }
