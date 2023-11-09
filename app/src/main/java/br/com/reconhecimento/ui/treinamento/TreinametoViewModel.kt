@@ -41,9 +41,9 @@ class ReconhecimentoLetrasViewModel @Inject internal constructor(
     private val deltaPesoVBias = pesoPadrao
 
     private val pesoW = pesosAletatorios(quantidadeNeuroniosEscondidos)
-    private val pesoWBias = ((-1.0).pow(Random.nextDouble(10.0)) * Random.nextDouble()) / 3
+    private var pesoWBias = ((-1.0).pow(Random.nextDouble(10.0)) * Random.nextDouble()) / 3
     private val deltaPesoW = pesoPadrao
-    private val deltaPesoWBias = 0.000
+    private var deltaPesoWBias = 0.000
 
     private val vetorEntradaX = vetorEntradaPadrao
     private val vetorSaidaDesejadaY = vetorEntradaPadrao
@@ -63,8 +63,8 @@ class ReconhecimentoLetrasViewModel @Inject internal constructor(
         var yIn: Double
         var y: Double
 
-        var deltinha: Double
-        var deltinhaIn: Double
+        var deltinha: Double = 0.0
+        var deltinhaIn: Double  = 0.0
         var momento: Double = 0.005
 
         while (ciclos < numeroDeCiclosDesejados) {
@@ -95,16 +95,32 @@ class ReconhecimentoLetrasViewModel @Inject internal constructor(
 
                 erroParcial += (0.5) * ((t - y) * (t - y))
 
-                for (i in 0 until quantidadeNeuroniosEscondidos){
+                for (i in 0 until quantidadeNeuroniosEscondidos) {
                     deltaPesoW[i] = (taxaAprendizagem * deltinha * z[i]) * momento
                 }
 
-                deltaPesoWBias =
+                deltaPesoWBias = (taxaAprendizagem * deltinha) * momento
+
+                for (i in 0 until quantidadeNeuroniosEscondidos) {
+                    deltinhaIn = deltinha * pesoW[i]
+                    deltinha = deltinhaIn * zIn[i].derivadaDaFuncaoDeAtivacao()
+
+                    deltaPesoV[i] = taxaAprendizagem * deltinha * vetorEntradaX[vetorAtual] * momento
+                    deltaPesoVBias[i] = (taxaAprendizagem * deltinha) * momento
+
+                    pesoV[i] += deltaPesoV[i]
+                    pesoVBias[i] += deltaPesoVBias[i]
+                }
+
+                for (i in 0 until quantidadeNeuroniosEscondidos){
+                    pesoW[i] += deltaPesoW[i]
+                }
+
+                pesoWBias += deltaPesoWBias
             }
         }
 
     }
-
 }
 
 
