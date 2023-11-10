@@ -1,4 +1,4 @@
-package br.com.reconhecimento.ui.treinamento
+package br.com.reconhecimento.ui.relatorio
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.text.KeyboardOptions
@@ -62,25 +63,20 @@ import br.com.reconhecimento.util.formatCasasDecimais
 import kotlinx.coroutines.launch
 
 @Composable
-fun TreinamentoRoute(
-    viewModel: TreinamentoViewModel = hiltViewModel()
+fun RelatorioRoute(
+    viewModel: RelatorioViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val fields by viewModel.fields.collectAsStateWithLifecycle()
 
-    TreinamentoScreen(
-        treinar = viewModel::treinar,
+    RelatorioScreen(
         uiState = uiState,
-        fields = fields,
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
-private fun TreinamentoScreen(
-    treinar: () -> Unit,
-    uiState: TreinamentoResults,
-    fields: Fields,
+private fun RelatorioScreen(
+    uiState: RelatorioResults,
 ) {
 
     Scaffold(
@@ -101,44 +97,29 @@ private fun TreinamentoScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             contentPadding = PaddingValues(vertical = 16.dp)
         ) {
-
-            item {
-                Row {
-                    OutlinedTextField(value = fields.taxaAprendizagem, onValueChange = {
-                        fields.taxaAprendizagem = it
-                    }, label = { Text(text = "Taxa Aprendizagem") },
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
-                    )
-                    OutlinedTextField(value = fields.momento, onValueChange = {
-                        fields.momento = it
-                    }, label = { Text(text = "Momento") },
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
-                    )
-                    OutlinedTextField(value = fields.quantidadeCiclos, onValueChange = {
-                        fields.quantidadeCiclos = it
-                    }, label = { Text(text = "Quantidade Ciclos") },
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-                    )
-                }
-
-                Button(onClick = treinar) {
-                    Text(text = "TREINAR")
-                }
-
-            }
-
-            item {
+            items(uiState.relatorios) {
+                var expanded by remember { mutableStateOf(false) }
                 ElevatedCard(
                     modifier = Modifier.fillMaxWidth(0.9f),
-                    elevation = CardDefaults.elevatedCardElevation(defaultElevation = 4.dp)
+                    elevation = CardDefaults.elevatedCardElevation(defaultElevation = 4.dp),
+                    onClick = { expanded = !expanded }
                 ) {
                     Column() {
-                        LegendaTabela()
-                        Divider()
-                        uiState.ultimoTreino.forEachIndexed { index, treinos ->
-                            LinhaTreino(treinos)
-                            if (uiState.ultimoTreino.lastIndex > index) {
-                                Divider()
+                        Text(
+                            text = "Treino nro: ${it.idTreino}",
+                            style = MaterialTheme.typography.titleMedium,
+                            color = MaterialTheme.colorScheme.onBackground,
+                            modifier = Modifier.padding(12.dp)
+                        )
+
+                        if (expanded) {
+                            LegendaTabela()
+                            Divider()
+                            it.neuronios.forEachIndexed { index, treinos ->
+                                LinhaTreino(treinos)
+                                if (it.neuronios.lastIndex > index) {
+                                    Divider()
+                                }
                             }
                         }
                     }
@@ -146,8 +127,8 @@ private fun TreinamentoScreen(
             }
         }
     }
-
 }
+
 
 @Composable
 fun VerticalDivider() {

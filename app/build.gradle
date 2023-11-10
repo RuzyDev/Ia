@@ -127,4 +127,6 @@ dependencies {
     implementation 'se.warting.signature:signature-pad:0.1.2'
     implementation 'com.itextpdf:itextpdf:5.5.13.2'
 
+    implementation 'co.yml:ycharts:2.1.0'
+
 }

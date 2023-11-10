@@ -16,13 +16,15 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import br.com.reconhecimento.ui.reconhecimento.ReconhecimentoLetrasNavigation
 import br.com.reconhecimento.ui.reconhecimento.reconhecimentoLetras
+import br.com.reconhecimento.ui.treinamento.TreinamentoNavigation
+import br.com.reconhecimento.ui.treinamento.treinamento
 
 @Composable
 fun ReconhecimentoNavHost(
     navController: NavHostController,
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier,
-    startDestination: String = ReconhecimentoLetrasNavigation.route,
+    startDestination: String = TreinamentoNavigation.route,
     onBackClickWithDestination: (String) -> Unit
 ) {
     NavHost(
@@ -31,6 +33,7 @@ fun ReconhecimentoNavHost(
         modifier = modifier,
     ) {
         reconhecimentoLetras()
+        treinamento()
     }
 
 }

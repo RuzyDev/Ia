@@ -5,16 +5,26 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import br.com.reconhecimento.data.model.FuncaoAtivacao
 import br.com.reconhecimento.database.converter.AppTypeConverters
+import br.com.reconhecimento.database.dao.ErroDao
+import br.com.reconhecimento.database.dao.FuncaoAtivacaoDao
+import br.com.reconhecimento.database.dao.TreinosDao
+import br.com.reconhecimento.database.entity.ErroEntity
+import br.com.reconhecimento.database.entity.FuncaoAtivacaoEntity
 import br.com.reconhecimento.database.entity.TreinosEntity
 import br.com.reconhecimento.util.DATABASE_NAME
 
 @Database(
-    entities = [TreinosEntity::class],
+    entities = [TreinosEntity::class, ErroEntity::class, FuncaoAtivacaoEntity::class],
     version = 1, exportSchema = false
 )
 @TypeConverters(AppTypeConverters::class)
 abstract class AppDatabase : RoomDatabase() {
+
+    abstract fun treinosDao(): TreinosDao
+    abstract fun erroDao(): ErroDao
+    abstract fun funcaoAtivacaoDao(): FuncaoAtivacaoDao
 
     companion object {
 

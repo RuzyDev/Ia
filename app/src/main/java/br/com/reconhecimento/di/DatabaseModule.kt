@@ -1,6 +1,9 @@
 package br.com.reconhecimento.di
 
 import android.content.Context
+import br.com.reconhecimento.database.dao.ErroDao
+import br.com.reconhecimento.database.dao.FuncaoAtivacaoDao
+import br.com.reconhecimento.database.dao.TreinosDao
 import br.com.reconhecimento.database.db.AppDatabase
 import br.com.reconhecimento.database.db.DatabaseTransactionRunner
 import br.com.reconhecimento.database.db.RoomTransactionRunner
@@ -21,6 +24,20 @@ class DatabaseModule {
         return AppDatabase.getInstance(context)
     }
 
+    @Provides
+    fun provideTreinosDao(appDatabase: AppDatabase): TreinosDao {
+        return appDatabase.treinosDao()
+    }
+
+    @Provides
+    fun provideErroDao(appDatabase: AppDatabase): ErroDao {
+        return appDatabase.erroDao()
+    }
+
+    @Provides
+    fun provideFuncaoAtivacaoDao(appDatabase: AppDatabase): FuncaoAtivacaoDao {
+        return appDatabase.funcaoAtivacaoDao()
+    }
 }
 
 
