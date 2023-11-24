@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "613329984603",
+    "project_id": "reconhecimento-cb23c",
+    "storage_bucket": "reconhecimento-cb23c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:613329984603:android:b5d0a9eb64ea1bdd9df37e",
+        "android_client_info": {
+          "package_name": "br.com.reconhecimento"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDB84PKafKmzHCbM1r6FL7LdeS6YbxEpa0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

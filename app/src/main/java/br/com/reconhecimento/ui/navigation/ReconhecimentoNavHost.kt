@@ -14,6 +14,8 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
+import br.com.reconhecimento.ui.conta.ContasNavigation
+import br.com.reconhecimento.ui.conta.contas
 import br.com.reconhecimento.ui.reconhecimento.ReconhecimentoLetrasNavigation
 import br.com.reconhecimento.ui.reconhecimento.reconhecimentoLetras
 import br.com.reconhecimento.ui.treinamento.TreinamentoNavigation
@@ -24,7 +26,7 @@ fun ReconhecimentoNavHost(
     navController: NavHostController,
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier,
-    startDestination: String = TreinamentoNavigation.route,
+    startDestination: String = ContasNavigation.route,
     onBackClickWithDestination: (String) -> Unit
 ) {
     NavHost(
@@ -34,6 +36,7 @@ fun ReconhecimentoNavHost(
     ) {
         reconhecimentoLetras()
         treinamento()
+        contas()
     }
 
 }

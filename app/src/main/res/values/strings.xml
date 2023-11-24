@@ -20,4 +20,6 @@
     <string name="finalizar">Finalizar</string>
     <string name="ocorreu_um_erro">Ocorreu um erro</string>
     <string name="dados_nao_encontrados">Dados não encontrados</string>
+    <string name="voce_acertou">Você acertou!</string>
+    <string name="voce_errou">Você errou!</string>
 </resources>
