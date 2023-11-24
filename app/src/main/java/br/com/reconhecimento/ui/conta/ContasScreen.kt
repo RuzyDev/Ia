@@ -117,7 +117,10 @@ private fun ContasScreen(
         onResult = { success ->
             if (file != null && success) {
                 val bitmap = ImageRotationUtil.rotateAndCompressImage(file!!.first)
+
                 recognizeText(bitmap) {
+                    text = ""
+                    acertou = null
                     bitmapFoto = bitmap
                 }
             }
